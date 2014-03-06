@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Page Title</title>
-	<script src="fuzzy.js"></script>
+	<script type="text/javascript" src="../fuzzy.js"></script>
 	<script>
 		window.onload = function() {
 			var imageObj = new Image();
@@ -11,24 +11,20 @@
 			var ctx = canvas.getContext('2d');
 			
 			var pixelate = function(image) {
-			    confirm(image.src);
 				ctx.drawImage(image, 0, 0);
-				Fuzzy.Pixelate(ctx, 5);
+				Fuzzy.Pixelate(ctx, image, 5);
+				Fuzzy.ColorFilter(ctx, Fuzzy.ColorFilters.RED);
 			}
 			
 			imageObj.onload = function() {
 				pixelate(this);
 			};
-			imageObj.src = "turtle.jpg";
-			pixelate(imageObj);
+			imageObj.src = "fuzzy.jpg";
 		}
 	</script>
 </head>
-<body>
-    <p>Image:</p>
-	<img id="turtle" src="turtle.jpg" width="1279" height="719">
-	
+<body>	
 	<p>Canvas:</p>
-    <canvas id="myCanvas" width="1279" height="719"></canvas>
+    <canvas id="myCanvas" width="639" height="359"></canvas>
 </body>
 </html>
