@@ -48,6 +48,11 @@ if ( typeof Fuzzy == 'undefined') {
                     g = imgData.data[i + 1] - 255;
                     b = imgData.data[i + 2];
                     break;
+                default:
+                    r = imgData.data[i];
+                    g = imgData.data[i + 1];
+                    b = imgData.data[i + 2];
+                    break;
             }
 
             imgData.data[i] = Math.min(255, Math.max(0, r));
