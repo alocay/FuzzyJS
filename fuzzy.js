@@ -4,9 +4,10 @@ if ( typeof Fuzzy == 'undefined') {
 
 (function() {
     this.ColorFilters = {
-        RED : "red",
-        GREEN : "green",
-        BLUE : "blue"
+        RED: "red",
+        GREEN: "green",
+        BLUE: "blue",
+        NONE: "none"
     }
 
     this.Pixelate = function(ctx, img, pixelsize) {
@@ -25,7 +26,6 @@ if ( typeof Fuzzy == 'undefined') {
     }
 
     this.ColorFilter = function(ctx, colorFilter) {
-        //_reset();
         var width = ctx.canvas.width;
         var height = ctx.canvas.height;
         var imgData = ctx.getImageData(0, 0, width, height);
@@ -58,8 +58,55 @@ if ( typeof Fuzzy == 'undefined') {
         ctx.putImageData(imgData, 0, 0);
     }
 
+    this.Invert = function(ctx) {
+        _invertColorFilter(ctx, this.ColorFilters.NONE);
+    }
+
+    this.InvertedColorFilter = function(ctx, colorFilter) {
+        _invertColorFilter(ctx, colorFilter);
+    }
+
     this.Greyscale = function(ctx) {
     }
+    
+    function _invertColorFilter(ctx, colorFilter) {
+        var width = ctx.canvas.width;
+        var height = ctx.canvas.height;
+        var imgData = ctx.getImageData(0, 0, width, height);
+
+        for (var i = 0; i < imgData.data.length; i += 4) {
+            var r, g, b;
+            switch (colorFilter) {
+                case Fuzzy.ColorFilters.RED:
+                    r = imgData.data[i];
+                    g = 255 - imgData.data[i + 1];
+                    b = 255 - imgData.data[i + 2];
+                    break;
+                case Fuzzy.ColorFilters.GREEN:
+                    r = 255 - imgData.data[i];
+                    g = imgData.data[i + 1];
+                    b = 255 - imgData.data[i + 2];
+                    break;
+                case Fuzzy.ColorFilters.GREEN:
+                    r = 255 - imgData.data[i];
+                    g = 255 - imgData.data[i + 1];
+                    b = imgData.data[i + 2];
+                    break;
+                default:
+                    r = 255 - imgData.data[i];
+                    g = 255 - imgData.data[i + 1];
+                    b = 255 - imgData.data[i + 2];
+                    break;
+            }
+
+            imgData.data[i] = Math.min(255, Math.max(0, r));
+            imgData.data[i + 1] = Math.min(255, Math.max(0, g));
+            imgData.data[i + 2] = Math.min(255, Math.max(0, b));
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+    }
+    
     function _getPixel(imgData, x, y) {
         index = (x + y * imgData.width) * 4;
         return {
