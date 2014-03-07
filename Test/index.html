@@ -12,7 +12,8 @@
             
             var pixelate = function(image) {
                 ctx.drawImage(image, 0, 0);
-                Fuzzy.InvertedColorFilter(ctx, Fuzzy.ColorFilters.BLUE);
+                Fuzzy.Greyscale(ctx);
+                //Fuzzy.InvertedColorFilter(ctx, Fuzzy.ColorFilters.BLUE);
                 //Fuzzy.Invert(ctx);
                 //Fuzzy.Pixelate(ctx, image, 5);
                 //Fuzzy.ColorFilter(ctx, Fuzzy.ColorFilters.RED);

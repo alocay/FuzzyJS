@@ -72,6 +72,16 @@ if ( typeof Fuzzy == 'undefined') {
     }
 
     this.Greyscale = function(ctx) {
+        var width = ctx.canvas.width;
+        var height = ctx.canvas.height;
+        var imgData = ctx.getImageData(0, 0, width, height);
+
+        for (var i = 0; i < imgData.data.length; i += 4) {
+            var grey = 0.299 * imgData.data[i] + 0.587 * imgData.data[i + 1] + 0.114 * imgData.data[i + 2];
+            imgData.data[i] = imgData.data[i + 1] = imgData.data[i + 2] = grey;
+        }
+        
+        ctx.putImageData(imgData, 0, 0);
     }
     
     function _invertColorFilter(ctx, colorFilter) {
