@@ -9,24 +9,31 @@
             
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext('2d');
+            imageObj.src = "fuzzy.jpg";
             
             var pixelate = function(image) {
                 ctx.drawImage(image, 0, 0);
-                Fuzzy.Greyscale(ctx);
-                //Fuzzy.InvertedColorFilter(ctx, Fuzzy.ColorFilters.BLUE);
+                //Fuzzy.Greyscale(ctx);
+                //Fuzzy.InvertedColorFilter(ctx, Fuzzy.ColorFilters.RED);
                 //Fuzzy.Invert(ctx);
-                //Fuzzy.Pixelate(ctx, image, 5);
+                Fuzzy.Pixelate(ctx, 10);
                 //Fuzzy.ColorFilter(ctx, Fuzzy.ColorFilters.RED);
             }
             
-            imageObj.onload = function() {
-                pixelate(this);
-            };
-            imageObj.src = "fuzzy.jpg";
+            if (imageObj.complete) {
+            	pixelate(imageObj);
+            }
+            else {
+            	imageObj.onload = function() {
+                	pixelate(this);
+            	};
+            }
         }
     </script>
 </head>
-<body>  
+<body>
+	<p>Image:</p>
+	<img src="fuzzy.jpg" />
     <p>Canvas:</p>
     <canvas id="myCanvas" width="639" height="359"></canvas>
 </body>

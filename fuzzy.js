@@ -9,20 +9,37 @@ if ( typeof Fuzzy == 'undefined') {
         BLUE: "blue",
         NONE: "none"
     }
+    
+    this.Pixelate = function(ctx, pixelsize) {
+        var width = ctx.canvas.width;
+        var height = ctx.canvas.height;
+        var imgData = ctx.getImageData(0, 0, width, height);
+        pixelsize = pixelsize <= 0 ? 1 : pixelsize;
+		
+        for(var i = 0; i < width; i += pixelsize) {
+            for(var j = 0; j < width; j += pixelsize) {
+                var offsetx = (pixelsize / 2) | 0;
+                var offsety = (pixelsize / 2) | 0;
+		        
+		        while(i + offsetx >= width) {
+		            offsetx--;
+		        }
+		        
+		        while(j + offsety >= height) {
+		            offsety--;
+		        }
+		        
+		        var pixel = _getPixel(imgData, i + offsetx, j + offsety);
+		        
+		        for(var x = i; x < i + pixelsize && x < width; x++) {
+		            for(var y = j; y < j + pixelsize && y < height; y++){
+		                _setPixel(imgData, x, y, pixel) {
+                    }
+                }
+            }
+        }
 
-    this.Pixelate = function(ctx, img, pixelsize) {
-        ctx.mozImageSmoothingEnabled = false;
-        ctx.webkitImageSmoothingEnabled = false;
-        ctx.imageSmoothingEnabled = false;
-        pixelsize = pixelsize > 100 ? 100 : pixelsize;
-        pixelsize = pixelsize < 1 ? 1 : pixelsize;
-        pixelsize *= 0.01;
-
-        width = ctx.canvas.width * pixelsize, height = ctx.canvas.height * pixelsize;
-
-        ctx.drawImage(img, 0, 0, width, height);
-
-        ctx.drawImage(ctx.canvas, 0, 0, width, height, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.putImageData(imgData, 0, 0);
     }
 
     this.ColorFilter = function(ctx, colorFilter) {
