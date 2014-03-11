@@ -33,7 +33,7 @@ if ( typeof Fuzzy == 'undefined') {
 		        
 		        for(var x = i; x < i + pixelsize && x < width; x++) {
 		            for(var y = j; y < j + pixelsize && y < height; y++){
-		                _setPixel(imgData, x, y, pixel) {
+		                _setPixel(imgData, x, y, pixel);
                     }
                 }
             }
