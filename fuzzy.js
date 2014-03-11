@@ -10,16 +10,16 @@ if ( typeof Fuzzy == 'undefined') {
         NONE: "none"
     }
     
-    this.Pixelate = function(ctx, pixelsize) {
+    this.Pixelate = function(ctx, pixelSize) {
         var width = ctx.canvas.width;
         var height = ctx.canvas.height;
         var imgData = ctx.getImageData(0, 0, width, height);
-        pixelsize = pixelsize <= 0 ? 1 : pixelsize;
+        pixelSize = pixelSize <= 0 ? 1 : pixelSize;
 		
-        for(var i = 0; i < width; i += pixelsize) {
-            for(var j = 0; j < width; j += pixelsize) {
-                var offsetx = (pixelsize / 2) | 0;
-                var offsety = (pixelsize / 2) | 0;
+        for(var i = 0; i < width; i += pixelSize) {
+            for(var j = 0; j < width; j += pixelSize) {
+                var offsetx = (pixelSize / 2) | 0;
+                var offsety = (pixelSize / 2) | 0;
 		        
 		        while(i + offsetx >= width) {
 		            offsetx--;
@@ -31,14 +31,34 @@ if ( typeof Fuzzy == 'undefined') {
 		        
 		        var pixel = _getPixel(imgData, i + offsetx, j + offsety);
 		        
-		        for(var x = i; x < i + pixelsize && x < width; x++) {
-		            for(var y = j; y < j + pixelsize && y < height; y++){
+		        for(var x = i; x < i + pixelSize && x < width; x++) {
+		            for(var y = j; y < j + pixelSize && y < height; y++){
 		                _setPixel(imgData, x, y, pixel);
                     }
                 }
             }
         }
 
+        ctx.putImageData(imgData, 0, 0);
+    }
+    
+    this.BoxBlur = function(ctx, blurSize) {
+        var width = ctx.canvas.width;
+        var height = ctx.canvas.height;
+        var imgData = ctx.getImageData(0, 0, width, height);
+        
+        for(var i = 0; i < width; i++) {
+            for(var j = 0; j < height; j++) {
+                var avgPixel = _getAvgPixel(imgData, i, j, width, height, blurSize);
+                
+                for(var x = i; x < i + blurSize && x < width; x++) {
+                    for(var y = j; y < j + blurSize && y < height; y++) {
+                        _setPixel(imgData, x, y, avgPixel);
+                    }
+                }
+            }
+        }
+        
         ctx.putImageData(imgData, 0, 0);
     }
 
@@ -137,6 +157,36 @@ if ( typeof Fuzzy == 'undefined') {
         }
 
         ctx.putImageData(imgData, 0, 0);
+    }
+    
+    function _getAvgPixel(imgData, x, y, width, height, areaSize) {
+        var avgR = 0;
+        var avgG = 0;
+        var avgB = 0;
+        var pixelCount = 0;
+
+        for(var i = x; i < x + areaSize && i < width; i++) {
+            for(var j = y; j < y + areaSize && j < height; j++) {
+                var p = _getPixel(imgData, i, j);
+                
+                avgR += p.r;
+                avgB += p.b;
+                avgG += p.g;
+                
+                pixelCount++;
+            }
+        }
+        
+        avgR = (avgR / pixelCount) | 0;
+        avgG = (avgG / pixelCount) | 0;
+        avgB = (avgB / pixelCount) | 0;
+        
+        return { 
+            r: avgR, 
+            b: avgB, 
+            g: avgG, 
+            a: 255 
+        };
     }
     
     function _getPixel(imgData, x, y) {

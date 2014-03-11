@@ -13,10 +13,11 @@
             
             var pixelate = function(image) {
                 ctx.drawImage(image, 0, 0);
+                Fuzzy.BoxBlur(ctx, 5);
                 //Fuzzy.Greyscale(ctx);
-                //Fuzzy.InvertedColorFilter(ctx, Fuzzy.ColorFilters.RED);
+                //Fuzzy.Pixelate(ctx, 10);
+                //Fuzzy.InvertedColorFilter(ctx, Fuzzy.ColorFilters.BLUE);
                 //Fuzzy.Invert(ctx);
-                Fuzzy.Pixelate(ctx, 10);
                 //Fuzzy.ColorFilter(ctx, Fuzzy.ColorFilters.RED);
             }
             
@@ -35,6 +36,6 @@
 	<p>Image:</p>
 	<img src="fuzzy.jpg" />
     <p>Canvas:</p>
-    <canvas id="myCanvas" width="639" height="359"></canvas>
+    <canvas id="myCanvas" width="500" height="357"></canvas>
 </body>
 </html>
