@@ -119,7 +119,7 @@ if ( typeof Fuzzy == 'undefined') {
                     g = imgData.data[i + 1];
                     b = 255 - imgData.data[i + 2];
                     break;
-                case Fuzzy.ColorFilters.GREEN:
+                case Fuzzy.ColorFilters.BLUE:
                     r = 255 - imgData.data[i];
                     g = 255 - imgData.data[i + 1];
                     b = imgData.data[i + 2];
