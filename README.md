@@ -25,6 +25,8 @@ var newCanvas = fuzzy(canvas).invert().draw();
 </script>
 ```
 
+There are various other operations, please refer to the documentation.
+
 ## Documentation
 _(Coming soon)_
 
