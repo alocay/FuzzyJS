@@ -3,7 +3,7 @@
 <head>
     <title>Page Title</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script type="text/javascript" src="../../lib/Fuzzy_new.js"></script>
+    <script type="text/javascript" src="../../lib/fuzzy.js"></script>
     <script>
         window.onload = function() {            
             var img = document.getElementById("myImage");
@@ -14,14 +14,15 @@
             var pixelate = document.getElementById("pixelate");
             var boxBlur = document.getElementById("box-blur");
             var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext('2d');
             
             var process = function(image) {
-                canvas.getContext('2d').drawImage(image, 0, 0, image.width, image.height);
+                ctx.drawImage(image, 0, 0, image.width, image.height);
                 fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw({ img: colorFilterImg });
                 fuzzy(canvas).invert().draw({ img: invertedImg });
-                fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw({ img: invertedColorImg });
+                fuzzy(ctx).invert(fuzzy.colorFilters.RED).draw({ img: invertedColorImg });
                 fuzzy(canvas).greyscale().draw({ img: greyScaleImg });
-                fuzzy(canvas).pixelate(5).draw({ img: pixelate });
+                fuzzy(img).pixelate(5).draw({ img: pixelate });
                 fuzzy(canvas).boxBlur(5).draw({ img: boxBlur});
             }
             
