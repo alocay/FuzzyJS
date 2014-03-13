@@ -6,15 +6,20 @@
     <script type="text/javascript" src="../../lib/fuzzy.js"></script>
     <script>
         window.onload = function() {            
-            var img = document.getElementById("myImage");
-            var colorFilterImg = document.getElementById("color-filter");
-            var invertedImg = document.getElementById("inverted");
-            var invertedColorImg = document.getElementById("inverted-color");
-            var greyScaleImg = document.getElementById("greyscale");
-            var pixelate = document.getElementById("pixelate");
-            var boxBlur = document.getElementById("box-blur");
-            var canvas = document.getElementById("myCanvas");
-            var ctx = canvas.getContext('2d');
+            var
+                img = document.getElementById("myImage"),
+                colorFilterImg = document.getElementById("color-filter"),
+                invertedImg = document.getElementById("inverted"),
+                invertedColorImg = document.getElementById("inverted-color"),
+                greyScaleImg = document.getElementById("greyscale"),
+                pixelate = document.getElementById("pixelate"),
+                boxBlur = document.getElementById("box-blur"),
+                canvas = document.createElement("canvas"),
+                ctx;
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx = canvas.getContext("2d");
             
             var process = function(image) {
                 ctx.drawImage(image, 0, 0, image.width, image.height);
@@ -38,47 +43,89 @@
     </script>
 </head>
 <body>
-	<div class="content">
-		<div class="grid originals">
-			<div class="col-1-2">
-				<img id="myImage" src="fuzzy.jpg" width="250" height="178" />
-				<div>Original image</div>
-			</div>
-			<div class="col-1-2">
-				<canvas id="myCanvas" width="250" height="178"></canvas>
-				<div>Original canvas</div>
-			</div>
-		</div>
-		
-		<div class="grid filters">
-			<div class="col-1-4">
-				<img class="sample" id="color-filter" width="166" height="118" />
-				<div>Color filter</div>
-			</div>
-			<div class="col-1-4">
-				<img id="inverted" width="166" height="118" />
-				<div>Inverted</div>
-			</div>
-			<div class="col-1-4">
-				<img id="inverted-color" width="166" height="118" />
-				<div>Inverter w/ color filter</div>
-			</div>
-			<div class="col-1-4">
-				<img id="greyscale" width="166" height="118" />
-				<div>Greyscale</div>
-			</div>
-		</div>
-		
-		<div class="grid blurs">
-			<div class="col-1-4">
-				<img id="pixelate" width="166" height="118" />
-				<div>Pixelate</div>
-			</div>
-			<div class="col-1-4">
-				<img id="box-blur" width="166" height="118" />
-				<div>Box blur</div>
-			</div>
-		</div>
-	</div>
+    <div class="main-content-container">
+        <div class="container header">
+            <div class="content-container">
+                <div class="section group">
+                    <div class="col span_4_of_6">
+                        <h1>Fuzzy JS</h1>
+                    </div>
+                    <div class="col span_2_of_6">
+                        <img id="myImage" src="fuzzy.jpg" width="250" height="178" />
+                        <div>Original image</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container samples">
+            <div class="content-container">
+                <div class="section group">
+                    <h2>Filters</h2>
+                    <h5 class="subtitle">Quick and simple filters</h5>
+                </div>
+                <div class="section group">
+                    <div class="col span_1_of_4">
+                        <img class="sample" id="color-filter" width="166" height="118" />
+                        <div>Color filter</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="inverted" width="166" height="118" />
+                        <div>Inverted</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="inverted-color" width="166" height="118" />
+                        <div>Inverter w/ color filter</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="greyscale" width="166" height="118" />
+                        <div>Greyscale</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container samples">
+            <div class="content-container">
+                <div class="section group">
+                    <h2>Blurs</h2>
+                    <h5 class="subtitle">Various blurs</h5>
+                </div>
+                <div class="section group">
+                    <div class="col span_1_of_4">
+                        <img id="pixelate" width="166" height="118" />
+                        <div>Pixelate</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="box-blur" width="166" height="118" />
+                        <div>Box blur</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container samples">
+            <div class="content-container">
+                <div class="section group">
+                    <h2>Extra</h2>
+                    <h5 class="subtitle">Various other image processing tools</h5>
+                </div>
+                <div class="section group">
+                    <h4><i>Coming soon!</i></h4>
+                </div> 
+            </div>
+        </div>
+
+        <div class="container footer">
+            <div class="content-container">
+                <div class="section group">
+                    <ul class="footer-links">
+                        <li class="col span_5_of_6">Built by Armando Locay, 2014. Licensed under the MIT License.</li>
+                        <li class="col span_1_of_6"><a href="https://github.com/alocay/Fuzzy">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

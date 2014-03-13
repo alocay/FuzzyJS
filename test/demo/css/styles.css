@@ -1,33 +1,219 @@
+@font-face {
+    font-family: tiza;
+    src: url(../assets/tiza-webfont.woff);
+}
+
 body {
+    background: #222 url('../assets/turquoise_stripe.jpg') repeat;
+    font-family: tiza, Verdana, Arial;
+    color: #dddddd;
 }
 
-.content {
-	width: 75%;
-	margin: auto;	
+a:hover,
+a:visited,
+a:active,
+a:link {
+    color: #48b7e1;
 }
 
-[class*='col-'] {
-	float: left;
+h2 {
+    margin: 0 0 5px 0;
 }
 
-.col-1-4 {
-	width: 25%;
+h4 {
+    text-align: center;
 }
 
-.col-1-2 {
-	width: 50%;
+h4 > i {
+    margin: auto;
 }
 
-.originals img,
-.originals canvas {
-	margin-top: 20px;
+ul {
+    list-style: none;
+    display: block;
 }
 
-.originals div {
-	margin-bottom: 20px;
+li > a {
+    text-decoration: none;
 }
 
-.filters img,
-.blurs img {
-	margin-top: 30px;
+.main-content-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 55%;
+    background: none repeat #222;
+    box-shadow: -8px 0px 5px 0px #222, 8px 0px 5px 0px #111;
+    /*border-radius: 10px;*/
+}
+
+.content-container {
+    padding: 15px 15px 70px 15px;
+    width: 100%;
+}
+
+.header .content-container {
+    padding: 15px;
+}
+
+.footer .content-container {
+    padding: 0px;
+}
+
+.container:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.container:nth-child(odd) {
+    background: rgba(102, 102, 102, 0.05);
+}
+
+.subtitle {
+    margin: 0 0 15px 0;
+}
+
+.samples img,
+.header img,
+.header canvas {
+    background: none repeat rgba(255, 255, 255, 0.1);;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.footer-links {
+    font-size: 6pt;
+    margin-top: 40px;
+}
+
+.footer-links li {
+    display: inline;
+}
+
+/*  SECTIONS  ============================================================================= */
+
+.section {
+	clear: both;
+	padding: 0px;
+	margin: 0px;
+}
+
+/*  GROUPING  ============================================================================= */
+
+
+.group:before,
+.group:after {
+    content:"";
+    display:table;
+}
+.group:after {
+    clear:both;
+}
+.group {
+    zoom:1; /* For IE 6/7 (trigger hasLayout) */
+}
+
+/*  GRID COLUMN SETUP   ==================================================================== */
+
+.col {
+	display: block;
+	float:left;
+	margin: 1% 0 1% 1.6%;
+}
+
+.col:first-child { margin-left: 0; } /* all browsers except IE6 and lower */
+
+
+/*  REMOVE MARGINS AS ALL GO FULL WIDTH AT 480 PIXELS */
+
+@media only screen and (max-width: 480px) {
+	.col { 
+		margin: 1% 0 1% 0%;
+	}
+}
+
+/*  GRID OF FOUR   ============================================================================= */
+
+	
+.span_4_of_4 {
+	width: 100%; 
+}
+
+.span_3_of_4 {
+	width: 74.6%; 
+}
+
+.span_2_of_4 {
+	width: 49.2%; 
+}
+
+.span_1_of_4 {
+	width: 23.8%; 
+}
+
+
+/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+@media only screen and (max-width: 480px) {
+	.span_4_of_4 {
+		width: 100%; 
+	}
+	.span_3_of_4 {
+		width: 100%; 
+	}
+	.span_2_of_4 {
+		width: 100%; 
+	}
+	.span_1_of_4 {
+		width: 100%; 
+	}
+}
+
+/*  GRID OF SIX   ============================================================================= */
+
+
+.span_6_of_6 {
+	width: 100%;
+}
+
+.span_5_of_6 {
+  	width: 83.06%;
+}
+
+.span_4_of_6 {
+  	width: 66.13%;
+}
+
+.span_3_of_6 {
+  	width: 49.2%;
+}
+
+.span_2_of_6 {
+  	width: 32.26%;
+}
+
+.span_1_of_6 {
+  	width: 15.33%;
+}
+
+
+/*  GO FULL WIDTH AT LESS THAN 480 PIXELS */
+
+@media only screen and (max-width: 480px) {
+	.span_6_of_6 {
+		width: 100%; 
+	}
+	.span_5_of_6 {
+		width: 100%; 
+	}
+	.span_4_of_6 {
+		width: 100%; 
+	}
+	.span_3_of_6 {
+		width: 100%; 
+	}
+	.span_2_of_6 {
+		width: 100%; 
+	}
+	.span_1_of_6 {
+		width: 100%; 
+	}
 }
