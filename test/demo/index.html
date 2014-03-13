@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script type="text/javascript" src="../../lib/Fuzzy_new.js"></script>
+    <script>
+        window.onload = function() {            
+            var img = document.getElementById("myImage");
+            var colorFilterImg = document.getElementById("color-filter");
+            var invertedImg = document.getElementById("inverted");
+            var invertedColorImg = document.getElementById("inverted-color");
+            var greyScaleImg = document.getElementById("greyscale");
+            var pixelate = document.getElementById("pixelate");
+            var boxBlur = document.getElementById("box-blur");
+            var canvas = document.getElementById("myCanvas");
+            
+            var process = function(image) {
+                canvas.getContext('2d').drawImage(image, 0, 0, image.width, image.height);
+                fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw({ img: colorFilterImg });
+                fuzzy(canvas).invert().draw({ img: invertedImg });
+                fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw({ img: invertedColorImg });
+                fuzzy(canvas).greyscale().draw({ img: greyScaleImg });
+                fuzzy(canvas).pixelate(5).draw({ img: pixelate });
+                fuzzy(canvas).boxBlur(5).draw({ img: boxBlur});
+            }
+            
+            if (img.complete) {
+            	process(img);
+            }
+            else {
+            	img.onload = function() {
+                	process(this);
+            	};
+            }
+        }
+    </script>
+</head>
+<body>
+	<div class="content">
+		<div class="grid originals">
+			<div class="col-1-2">
+				<img id="myImage" src="fuzzy.jpg" width="250" height="178" />
+				<div>Original image</div>
+			</div>
+			<div class="col-1-2">
+				<canvas id="myCanvas" width="250" height="178"></canvas>
+				<div>Original canvas</div>
+			</div>
+		</div>
+		
+		<div class="grid filters">
+			<div class="col-1-4">
+				<img class="sample" id="color-filter" width="166" height="118" />
+				<div>Color filter</div>
+			</div>
+			<div class="col-1-4">
+				<img id="inverted" width="166" height="118" />
+				<div>Inverted</div>
+			</div>
+			<div class="col-1-4">
+				<img id="inverted-color" width="166" height="118" />
+				<div>Inverter w/ color filter</div>
+			</div>
+			<div class="col-1-4">
+				<img id="greyscale" width="166" height="118" />
+				<div>Greyscale</div>
+			</div>
+		</div>
+		
+		<div class="grid blurs">
+			<div class="col-1-4">
+				<img id="pixelate" width="166" height="118" />
+				<div>Pixelate</div>
+			</div>
+			<div class="col-1-4">
+				<img id="box-blur" width="166" height="118" />
+				<div>Box blur</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
