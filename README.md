@@ -3,38 +3,23 @@
 A simple image filter/processing JavaScript library
 
 ## Getting Started
-### On the server
-Install the module with: `npm install Fuzzy`
-
-```javascript
-var Fuzzy = require('Fuzzy');
-Fuzzy.awesome(); // "awesome"
-```
-
 ### In the browser
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/aloca_000/Fuzzy/master/dist/Fuzzy.min.js
-[max]: https://raw.github.com/aloca_000/Fuzzy/master/dist/Fuzzy.js
+[min]: https://raw.github.com/aloca_000/Fuzzy/master/dist/fuzzy.min.js
+[max]: https://raw.github.com/aloca_000/Fuzzy/master/lib/fuzzy.js
 
 In your web page:
 
 ```html
 <script src="dist/Fuzzy.min.js"></script>
 <script>
-awesome(); // "awesome"
-</script>
-```
+var canvas = document.getElementById("myCanvas");
+var img = document.getElementById("myImage");
 
-In your code, you can attach Fuzzy's methods to any object.
+fuzzy(canvas).pixelate(5).draw({ img: img }); // pixelates the image on the canvas and sets the Image element's src to this modified image
 
-```html
-<script>
-var exports = Bocoup.utils;
-</script>
-<script src="dist/Fuzzy.min.js"></script>
-<script>
-Bocoup.utils.awesome(); // "awesome"
+var newCanvas = fuzzy(canvas).invert().draw(); // inverts the image on the canvas and returns a new canvas
 </script>
 ```
 
