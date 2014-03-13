@@ -12,14 +12,16 @@ Download the [production version][min] or the [development version][max].
 In your web page:
 
 ```html
-<script src="dist/Fuzzy.min.js"></script>
+<script src="dist/fuzzy.min.js"></script>
 <script>
 var canvas = document.getElementById("myCanvas");
 var img = document.getElementById("myImage");
 
-fuzzy(canvas).pixelate(5).draw({ img: img }); // pixelates the image on the canvas and sets the Image element's src to this modified image
+// pixelates the image on the canvas and sets the Image element's src to this modified image
+fuzzy(canvas).pixelate(5).draw({ img: img }); 
 
-var newCanvas = fuzzy(canvas).invert().draw(); // inverts the image on the canvas and returns a new canvas
+// inverts the image on the canvas and returns a new canvas
+var newCanvas = fuzzy(canvas).invert().draw(); 
 </script>
 ```
 
