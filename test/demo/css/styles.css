@@ -74,12 +74,25 @@ li > a {
     margin: 0 0 15px 0;
 }
 
+#enlarge,
 .samples img,
 .header img,
 .header canvas {
-    background: none repeat rgba(255, 255, 255, 0.1);;
+    background: none repeat rgba(255, 255, 255, 0.1);
     padding: 7px;
     border-radius: 5px;
+}
+
+#enlarge { /*CSS for enlarged image*/
+	position: absolute;
+	left: -1000px;
+	border: 0;
+	visibility: hidden;
+	background: none repeat rgba(80, 80, 80, 0.7);
+}
+
+img#enlarge.enlarge-show { /*CSS for enlarged image on hover*/
+	visibility: visible;
 }
 
 .footer-links {
@@ -105,6 +118,7 @@ div.upload input {
     opacity: 0 !important;
     overflow: hidden !important;
 }
+
 
 /*  SECTIONS  ============================================================================= */
 

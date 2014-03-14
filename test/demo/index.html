@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page Title</title>
+    <title>Fuzzy JS</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script type="text/javascript" src="../../lib/fuzzy.js"></script>
     <script type="text/javascript" src="js/load-image.min.js"></script>
@@ -9,15 +9,16 @@
     <script>
         window.onload = function() {            
             var
-                img = $("#myImage")[0],
+                myImg = $("#myImage")[0],
                 canvas = document.createElement("canvas"),
                 colorFilterImg = document.createElement('img'),
-                maxAttempts = 9,
+                maxAttempts = 5,
                 attempts = 0,
+                maxSampleImgHeight = 118,
                 ctx;
             
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = myImg.width;
+            canvas.height = myImg.height;
             ctx = canvas.getContext("2d");
             
             var newImage;
@@ -27,14 +28,33 @@
             		function (i) {
             			i.id = "myImage";
             			$("#myImage").replaceWith(i)
-            			img = $("#myImage")[0];
-            			
-            			runDemo(img);
+            			runDemo($("#myImage")[0]);
             		},
             		{ maxWidth: 250,
             		  maxHeight: 178 }
             	);
             });
+            
+            var setupHoverPopup = function (imgToMouseOver, imgToScale, width, height) {
+            	var enlargedImage = fuzzy(imgToScale).scale(width, height);
+            	
+            	waitForImgLoad(enlargedImage, function () {		        	
+		        	$(imgToMouseOver).mousemove(function (event) {
+		        		if($("#enlarge").attr("src") !== enlargedImage.src) {
+		        			$("#enlarge").attr("src", enlargedImage.src);
+		        		}
+		        		
+		        		$("#enlarge").css({
+		        			top: event.clientY + 45,
+		        			left: event.clientX + 45
+		        		}).addClass("enlarge-show");
+		        	});
+		        	
+		        	$(imgToMouseOver).mouseleave(function (event) {
+		        		$("#enlarge").css("left", "-1000").removeClass("enlarge-show");
+		        	});
+            	});
+            };
             
             var demo = function(image) {
             	try {
@@ -55,42 +75,91 @@
                 fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(null,
                 	{
                 		callback: function (i) {
-                			i.className = "sample";
-                			var element = $("#color-filter").children().first();
+                			var 
+                				element = $("#color-filter").children().first(),
+                				newImageElement = document.createElement('img');
+                				
+                			newImageElement.className = "sample";
+                			newImageElement.height = maxSampleImgHeight;
+                			newImageElement.style.width = 'auto';
+                			newImageElement.src = i.src;
                 			
                 			if(element.attr("src") !== undefined) {
-                				element.replaceWith(i);
+                				element.replaceWith(newImageElement);
                 			}
                 			else {
-                				$(i).insertBefore(element);
+                				$(newImageElement).insertBefore(element);
                 			}
-                		},
-                		height: 118
+                			
+                			waitForImgLoad(i, function () {
+            					setupHoverPopup(newImageElement, i, newImageElement.style.width * 3, maxSampleImgHeight * 3);
+            				});
+                		}
                 	});
                 
-                fuzzy(canvas).invert().draw($("#inverted")[0]);
-                fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw($("#inverted-color")[0]);
-                fuzzy(canvas).greyscale().draw($("#greyscale")[0]);
-                fuzzy(img).pixelate(5).draw($("#pixelate")[0]);
-                fuzzy(canvas).boxBlur(5).draw($("#box-blur")[0]);
-            }
+                fuzzy(canvas).invert().draw($("#inverted")[0],
+                	{
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#inverted")[0], im, $("#inverted")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw($("#inverted-color")[0],
+                	{
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#inverted-color")[0], im, $("#inverted-color")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                fuzzy(canvas).greyscale().draw($("#greyscale")[0],
+                	{
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#greyscale")[0], im, $("#greyscale")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                fuzzy(image).pixelate(5).draw($("#pixelate")[0],
+                	{
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#pixelate")[0], im, $("#pixelate")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                fuzzy(canvas).boxBlur(5).draw($("#box-blur")[0],
+                	{
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#box-blur")[0], im, $("#box-blur")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+            };
             
-            var runDemo = function (i) {
-            	if(img.complete) {
-            		demo(i);
+            var waitForImgLoad = function (i, func) {
+            	if(i.complete) {
+            		func(i);
             	}
             	else {
-            		i.onload = function () {
-            			demo(this);
-            		}
+            		$(i).load(function () {
+            			func(i);
+            		});
             	}
-            }
+            };
             
-            runDemo(img);
+            var runDemo = function (i) {
+            	waitForImgLoad(i, demo);
+            };
+            
+            runDemo(myImg);
         }
     </script>
 </head>
 <body>
+	<img id="enlarge" />
     <div class="main-content-container">
         <div class="container header">
             <div class="content-container">
@@ -100,7 +169,7 @@
                         <h5 class="subtitle">A simple image processing JavaScript library</h5>
                     </div>
                     <div class="col span_2_of_6">
-                        <img id="myImage" src="fuzzy.jpg" width="250" height="178" />
+                        <img id="myImage" src="assets/fuzzy.jpg" width="250" height="178" />
                         <form action="" method="post" enctype="multipart/form-data">
                         	<div class="upload">
                         		<input type="file" id="file-input" />
@@ -122,15 +191,15 @@
                         <div>Color filter</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="inverted" height="118" />
+                        <img id="inverted" class="sample" height="118" />
                         <div>Inverted</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="inverted-color" height="118" />
+                        <img id="inverted-color" class="sample" height="118" />
                         <div>Inverter w/ color filter</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="greyscale" height="118" />
+                        <img id="greyscale" class="sample" height="118" />
                         <div>Greyscale</div>
                     </div>
                 </div>
@@ -145,11 +214,11 @@
                 </div>
                 <div class="section group">
                     <div class="col span_1_of_4">
-                        <img id="pixelate" height="118" />
+                        <img id="pixelate" class="sample" height="118" />
                         <div>Pixelate</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="box-blur" height="118" />
+                        <img id="box-blur" class="sample" height="118" />
                         <div>Box blur</div>
                     </div>
                 </div>
