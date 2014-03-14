@@ -22,9 +22,13 @@ var addNewImage = function (image) {
 	document.body.appendChild(image);
 };
 
+// pixelates and sets the modified image to 'img'
 fuzzy(canvas).pixelate(5).draw(img); 
+
+// inverts and invokes the given callback with the new modified image
 fuzzy(img2).invert().draw(null, { callback: addNewImage, width: 500 });
 
+// inverts and returns the canvas
 var newCanvas = fuzzy(canvas).invert().draw(); 
 </script>
 ```
