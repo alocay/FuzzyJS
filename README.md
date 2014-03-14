@@ -1,4 +1,4 @@
-# Fuzzy
+# FuzzyJS
 
 A simple image filter/processing JavaScript library
 
