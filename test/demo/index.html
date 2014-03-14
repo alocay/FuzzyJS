@@ -4,41 +4,89 @@
     <title>Page Title</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script type="text/javascript" src="../../lib/fuzzy.js"></script>
+    <script type="text/javascript" src="js/load-image.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
     <script>
         window.onload = function() {            
             var
-                img = document.getElementById("myImage"),
-                colorFilterImg = document.getElementById("color-filter"),
-                invertedImg = document.getElementById("inverted"),
-                invertedColorImg = document.getElementById("inverted-color"),
-                greyScaleImg = document.getElementById("greyscale"),
-                pixelate = document.getElementById("pixelate"),
-                boxBlur = document.getElementById("box-blur"),
+                img = $("#myImage")[0],
                 canvas = document.createElement("canvas"),
+                colorFilterImg = document.createElement('img'),
+                maxAttempts = 9,
+                attempts = 0,
                 ctx;
             
             canvas.width = img.width;
             canvas.height = img.height;
             ctx = canvas.getContext("2d");
             
-            var process = function(image) {
-                ctx.drawImage(image, 0, 0, image.width, image.height);
-                fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw({ img: colorFilterImg });
-                fuzzy(canvas).invert().draw({ img: invertedImg });
-                fuzzy(ctx).invert(fuzzy.colorFilters.RED).draw({ img: invertedColorImg });
-                fuzzy(canvas).greyscale().draw({ img: greyScaleImg });
-                fuzzy(img).pixelate(5).draw({ img: pixelate });
-                fuzzy(canvas).boxBlur(5).draw({ img: boxBlur});
+            var newImage;
+            $("#file-input").change(function(e) {
+            	newImage = loadImage(
+            		e.target.files[0],
+            		function (i) {
+            			i.id = "myImage";
+            			$("#myImage").replaceWith(i)
+            			img = $("#myImage")[0];
+            			
+            			runDemo(img);
+            		},
+            		{ maxWidth: 250,
+            		  maxHeight: 178 }
+            	);
+            });
+            
+            var demo = function(image) {
+            	try {
+            		canvas.width = image.width;
+            		canvas.height = image.height;
+                	ctx.drawImage(image, 0, 0, image.width, image.height);
+               	}
+               	catch (e) {
+               		if(e.name === 'NS_ERROR_NOT_AVAILABLE' && attempts < maxAttempts) {
+               			attempts++;
+	               		window.setTimeout(function () {
+	               			runDemo(image);
+	               		},100);
+               		}
+               	}
+               	
+               	attempts = 0;
+                fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(null,
+                	{
+                		callback: function (i) {
+                			i.className = "sample";
+                			var element = $("#color-filter").children().first();
+                			
+                			if(element.attr("src") !== undefined) {
+                				element.replaceWith(i);
+                			}
+                			else {
+                				$(i).insertBefore(element);
+                			}
+                		},
+                		height: 118
+                	});
+                
+                fuzzy(canvas).invert().draw($("#inverted")[0]);
+                fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw($("#inverted-color")[0]);
+                fuzzy(canvas).greyscale().draw($("#greyscale")[0]);
+                fuzzy(img).pixelate(5).draw($("#pixelate")[0]);
+                fuzzy(canvas).boxBlur(5).draw($("#box-blur")[0]);
             }
             
-            if (img.complete) {
-            	process(img);
+            var runDemo = function (i) {
+            	if(img.complete) {
+            		demo(i);
+            	}
+            	else {
+            		i.onload = function () {
+            			demo(this);
+            		}
+            	}
             }
-            else {
-            	img.onload = function() {
-                	process(this);
-            	};
-            }
+            
+            runDemo(img);
         }
     </script>
 </head>
@@ -49,10 +97,15 @@
                 <div class="section group">
                     <div class="col span_4_of_6">
                         <h1>Fuzzy JS</h1>
+                        <h5 class="subtitle">A simple image processing JavaScript library</h5>
                     </div>
                     <div class="col span_2_of_6">
                         <img id="myImage" src="fuzzy.jpg" width="250" height="178" />
-                        <div>Original image</div>
+                        <form action="" method="post" enctype="multipart/form-data">
+                        	<div class="upload">
+                        		<input type="file" id="file-input" />
+                        	</div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -65,20 +118,19 @@
                     <h5 class="subtitle">Quick and simple filters</h5>
                 </div>
                 <div class="section group">
-                    <div class="col span_1_of_4">
-                        <img class="sample" id="color-filter" width="166" height="118" />
+                    <div class="col span_1_of_4" id="color-filter">
                         <div>Color filter</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="inverted" width="166" height="118" />
+                        <img id="inverted" height="118" />
                         <div>Inverted</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="inverted-color" width="166" height="118" />
+                        <img id="inverted-color" height="118" />
                         <div>Inverter w/ color filter</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="greyscale" width="166" height="118" />
+                        <img id="greyscale" height="118" />
                         <div>Greyscale</div>
                     </div>
                 </div>
@@ -93,11 +145,11 @@
                 </div>
                 <div class="section group">
                     <div class="col span_1_of_4">
-                        <img id="pixelate" width="166" height="118" />
+                        <img id="pixelate" height="118" />
                         <div>Pixelate</div>
                     </div>
                     <div class="col span_1_of_4">
-                        <img id="box-blur" width="166" height="118" />
+                        <img id="box-blur" height="118" />
                         <div>Box blur</div>
                     </div>
                 </div>

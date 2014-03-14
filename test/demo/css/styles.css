@@ -1,10 +1,10 @@
 @font-face {
     font-family: tiza;
-    src: url(../assets/tiza-webfont.woff);
+    src: url(../assets/tiza-webfont.woff); /* Tiza font courtesy of Pablo Caro. Found @ http://www.fontsquirrel.com/fonts/Tiza */
 }
 
 body {
-    background: #222 url('../assets/turquoise_stripe.jpg') repeat;
+    background: #222 url('../assets/binding_dark.png') repeat; /* binding_dark.png courtesy of Tia Newbury. Found @ http://subtlepatterns.com/ */
     font-family: tiza, Verdana, Arial;
     color: #dddddd;
 }
@@ -40,19 +40,22 @@ li > a {
 .main-content-container {
     margin-left: auto;
     margin-right: auto;
-    width: 55%;
-    background: none repeat #222;
-    box-shadow: -8px 0px 5px 0px #222, 8px 0px 5px 0px #111;
+    width: 60%;
+    background: none repeat rgba(34, 34, 34, 0.3);
+    box-shadow: -8px 0px 5px 0px #111, 8px 0px 5px 0px #111;
+    min-width: 950px;
+    max-width: 1130px;
     /*border-radius: 10px;*/
 }
 
 .content-container {
-    padding: 15px 15px 70px 15px;
+    padding: 15px 15px 70px 30px;
     width: 100%;
 }
 
 .header .content-container {
     padding: 15px;
+  	padding-left: 30px;
 }
 
 .footer .content-container {
@@ -86,6 +89,21 @@ li > a {
 
 .footer-links li {
     display: inline;
+}
+
+div.upload {
+    width: 157px;
+    height: 57px;
+    background: url(../assets/upload.png);
+    overflow: hidden;
+}
+
+div.upload input {
+    display: block !important;
+    width: 157px !important;
+    height: 57px !important;
+    opacity: 0 !important;
+    overflow: hidden !important;
 }
 
 /*  SECTIONS  ============================================================================= */
