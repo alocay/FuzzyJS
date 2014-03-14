@@ -2,6 +2,8 @@
 
 A simple image filter/processing JavaScript library
 
+[Simple Fuzzy JS Demo](http://fuzzyjs.webuda.com/)
+
 ## Getting Started
 ### In the browser
 Download the [production version][min] or the [development version][max].
