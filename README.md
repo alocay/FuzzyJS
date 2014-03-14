@@ -16,11 +16,15 @@ In your web page:
 <script>
 var canvas = document.getElementById("myCanvas");
 var img = document.getElementById("myImage");
+var img2 = document.getElementById("myImage2");
 
-// pixelates the image on the canvas and sets the Image element's src to this modified image
-fuzzy(canvas).pixelate(5).draw({ img: img }); 
+var addNewImage = function (image) {
+	document.body.appendChild(image);
+};
 
-// inverts the image on the canvas and returns a new canvas
+fuzzy(canvas).pixelate(5).draw(img); 
+fuzzy(img2).invert().draw(null, { callback: addNewImage, width: 500 });
+
 var newCanvas = fuzzy(canvas).invert().draw(); 
 </script>
 ```
