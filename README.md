@@ -17,6 +17,7 @@ In your web page:
 var canvas = document.getElementById("myCanvas");
 var img = document.getElementById("myImage");
 var img2 = document.getElementById("myImage2");
+var img3 = document.getElementById("myImage3");
 
 var addNewImage = function (image) {
 	document.body.appendChild(image);
@@ -27,6 +28,9 @@ fuzzy(canvas).pixelate(5).draw(img);
 
 // inverts and invokes the given callback with the new modified image
 fuzzy(img2).invert().draw(null, { callback: addNewImage, width: 500 });
+
+// adds a color filter and sets 'img3' to the modified image. Also calls 'addNewImage' with a new image (with the same modification) with a width of 500.
+fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(img3, { callback: addNewImage, width: 500 });
 
 // inverts and returns the canvas
 var newCanvas = fuzzy(canvas).invert().draw(); 
