@@ -29,7 +29,8 @@ fuzzy(canvas).pixelate(5).draw(img);
 // inverts and invokes the given callback with the new modified image
 fuzzy(img2).invert().draw(null, { callback: addNewImage, width: 500 });
 
-// adds a color filter and sets 'img3' to the modified image. Also calls 'addNewImage' with a new image (with the same modification) with a width of 500.
+// adds a color filter and sets 'img3' to the modified image
+// also calls 'addNewImage' with a new image (with the same modification) with a width of 500
 fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(img3, { callback: addNewImage, width: 500 });
 
 // inverts and returns the canvas
