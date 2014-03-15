@@ -47,7 +47,7 @@ See: fuzzy.colorFilters
 
 ### Return:
 
-* **Object** Returns this instance of `fuzzy`
+* **Object** Returns the current instance of `fuzzy`
 
 ## invert(colorFilter)
 
@@ -65,7 +65,7 @@ You can also pass a color filter to this method and that pixel value will not be
 
 ### Return:
 
-* **Object** Returns this instance `fuzzy`
+* **Object** Returns the current instance `fuzzy`
 
 ## greyscale()
 
@@ -76,7 +76,7 @@ Applies a grey scale effect
 
 ### Return:
 
-* **Object** Returns this instance `fuzzy`
+* **Object** Returns the current instance `fuzzy`
 
 ## pixelate(pixelSize)
 
@@ -91,7 +91,7 @@ Applies a pixelation effect
 
 ### Return:
 
-* **Object** Returns this instance `fuzzy`
+* **Object** Returns the current instance `fuzzy`
 
 ## boxBlur(The)
 
@@ -106,7 +106,7 @@ Applies a box blur effect
 
 ### Return:
 
-* **Object** Returns this instance `fuzzy`
+* **Object** Returns the current instance `fuzzy`
 
 ## draw((Optional), (Optional))
 
