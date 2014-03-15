@@ -43,7 +43,8 @@ var newCanvas = fuzzy(canvas).invert().draw();
 There are various other operations, please refer to the documentation.
 
 ## Documentation
-_(Coming soon)_
+[Simple documentation](https://github.com/alocay/FuzzyJS/blob/master/docs/fuzzy-js-docs.md)
+More to come.
 
 ## Examples
 _(Coming soon)_
