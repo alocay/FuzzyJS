@@ -4,81 +4,138 @@
 (function(window) {
   'use strict';
   
-  var 
+  var
+    // stores a copy of the original canvas - internal use
     _canvas,
+    
+    // 2d context of _canvas - internal use
     _context,
+    
+    // pixel data array of _canvas - internal use
     _imgData,
+    
+    // width of the given image or canvas - internal use
     _width,
+    
+    // height of the given image or canvas - internal use
     _height,
+    
+    // the original canvas/image - internal use
     _originalCanvas,
     
-    /* init */
-
-    fuzzy = function (obj) {
+    /**
+     * Entry point for the fuzzy library functionality
+     * 
+     * A new canvas is created based on the image/canvas given. All modifications happen on this canvas, so the original canvas is left untouched.
+     * 
+     * @method fuzzy
+     * @param {Object} imgObj The object containing the image data. Can be either an HTMLImageElement or an HTMLCanvasElement
+     * @returns {Object} Returns the current instance of `fuzzy` 
+     * @api public
+     */
+    fuzzy = function (imgObj) {
       _canvas = window.document.createElement('canvas');
       _context = _canvas.getContext("2d");
       
-      if(obj instanceof window.HTMLImageElement) { // in an image
-        if(!obj.complete) {
-          throw "image must first be loaded (src: " + obj.src + ")";
+      // check if we have a canvas or image, return null if neither
+      if(imgObj instanceof window.HTMLImageElement) { // in an image
+        if(!imgObj.complete) {
+          throw "image must first be loaded (src: " + imgObj.src + ")";
         }
-        _initImg(obj);
+        
+        // Sets up the canvas object or later use
+        _initImg(imgObj);
       }
-      else if (obj instanceof window.HTMLCanvasElement) {
-        _initCanvas(obj);
+      else if (imgObj instanceof window.HTMLCanvasElement) {
+        // Copies this canvas for later use
+        _initCanvas(imgObj);
       }
       else {
         return null;
       }
       
+      // Get the pixel data
       _imgData = _context.getImageData(0, 0, _width, _height);
       
+      // return itself
       return fuzzy;
     };
 
-  /* filters */
-  
+   /*!
+    * Beginning of simple filters - colorFilter, greyscale, invert
+    */
+
+  /**
+   * Simple object used for passing in color filters
+   * 
+   * Current values
+   *    - `fuzzy.colorFilters.RED`
+   *    - `fuzzy.colorFilters.GREEN`
+   *    - `fuzzy.colorFilters.BLUE`
+   *    - `fuzzy.colorFilters.NONE`
+   * 
+   * @see fuzzy.colorFilter
+   * @api public
+   */
   fuzzy.colorFilters = {
     RED: "red",
     GREEN: "green",
     BLUE: "blue",
-    NONE: "none"
+    NONE: "none" // used primarily interally
   };
   
+  /**
+   * Applies a very simple color filter by filtering out the OTHER colors
+   * 
+   * ### Examples:
+   *     fuzzy(img).colorFilter(fuzzy.colorFilters.RED).draw(); // filters out green and blue
+   * 
+   * Best to use the predefined values found in `fuzzy.colorFilters`
+   * 
+   * @method colorFilter
+   * @param {String} colorFilter The color to use in the filter
+   * @see fuzzy.colorFilters
+   * @return {Object} Returns the current instance of `fuzzy`
+   * @api public
+   */
   fuzzy.colorFilter = function (colorFilter) {    
     for (var i = 0; i < _imgData.data.length; i += 4) {
       var r, g, b;
+      
+      // simply set the pixels not related to the specified color to 0
       switch (colorFilter) {
         case fuzzy.colorFilters.RED:
-          r = _imgData.data[i];
-          g = _imgData.data[i + 1] - 255;
-          b = _imgData.data[i + 2] - 255;
+          _imgData.data[i + 1] = 0;
+          _imgData.data[i + 2] = 0;
           break;
         case fuzzy.colorFilters.GREEN:
-          r = _imgData.data[i] - 255;
-          g = _imgData.data[i + 1];
-          b = _imgData.data[i + 2] - 255;
+          _imgData.data[i] = 0;
+          _imgData.data[i + 2] = 0;
           break;
         case fuzzy.colorFilters.BLUE:
-          r = _imgData.data[i] - 255;
-          g = _imgData.data[i + 1] - 255;
-          b = _imgData.data[i + 2];
-          break;
-        default:
-          r = _imgData.data[i];
-          g = _imgData.data[i + 1];
-          b = _imgData.data[i + 2];
+          _imgData.data[i] = 0;
+          _imgData.data[i + 1] = 0;
           break;
       }
-  
-      _imgData.data[i] = Math.min(255, Math.max(0, r));
-      _imgData.data[i + 1] = Math.min(255, Math.max(0, g));
-      _imgData.data[i + 2] = Math.min(255, Math.max(0, b));
     }
     
     return this;
   };
   
+  /**
+   * Applies a negative filter
+   * 
+   * You can also pass a color filter to this method and that pixel value will not be altered
+   * 
+   * ### Examples:
+   *     fuzzy(img).invert().draw();
+   *     fuzzy(img).invert(fuzzy.colorFilters.GREEN).draw();
+   * 
+   * @method invert
+   * @param {Object} colorFilter (Optional) Specifies a color to leave unaltered for each pixel
+   * @return {Object} Returns the current instance of `fuzzy`
+   * @api public
+   */
   fuzzy.invert = function(colorFilter) {
     if(colorFilter) {
       _invertColorFilter(colorFilter);
@@ -90,6 +147,16 @@
     return this;
   };
 
+  /**
+   * Applies a grey scale effect
+   * 
+   * ### Example:
+   *     fuzzy(img).greyscale().draw();
+   * 
+   * @method greyscale
+   * @return {Object} Returns the current instance of `fuzzy`
+   * @api public
+   */
   fuzzy.greyscale = function() {
     for (var i = 0; i < _imgData.data.length; i += 4) {
       var grey = 0.299 * _imgData.data[i] + 0.587 * _imgData.data[i + 1] + 0.114 * _imgData.data[i + 2];
@@ -99,10 +166,24 @@
     return this;
   };
   
-  /* Blurs */
- 
+  /*!
+    * Beginning of more complex processing - pixelate, box blur
+    */
+  
+  /**
+   * Applies a pixelation effect
+   * 
+   * ### Example:
+   *     fuzzy(img).pixelate(4).draw();
+   * 
+   * @method pixelate
+   * @param (Number) pixelSize Specifies the pixel size for the pixelation effect
+   * @return {Object} Returns the current instance of `fuzzy`
+   * @api public
+   */
   fuzzy.pixelate = function (pixelSize) {
     pixelSize = pixelSize <= 0 ? 1 : pixelSize;
+    pixelSize = pixelSize >= _width ? _width-1 : pixelSize;
     
     for(var i = 0; i < _width; i += pixelSize) {
       for(var j = 0; j < _width; j += pixelSize) {
@@ -130,6 +211,17 @@
     return this;
   };
   
+  /**
+   * Applies a box blur effect
+   * 
+   * ### Example:
+   *     fuzzy(img).boxBlur(5).draw();
+   * 
+   * @method boxBlur
+   * @param (Number) The size of the blur. The larger the number, the greater the affect.
+   * @return {Object} Returns the current instance of `fuzzy`
+   * @api public
+   */
   fuzzy.boxBlur = function (blurSize) {
     blurSize = blurSize < 0 ? 0 : blurSize;
 
@@ -149,12 +241,35 @@
     return this;
   };
   
-  /* finalize processing */
-  fuzzy.scale = function (w, h) {
-    _context.putImageData(_imgData, 0, 0);
-    return _getNewImage(w, h);
-  };
- 
+  /*!
+   * Beginning finalize functions
+   */
+  
+  /**
+   * Places the image data on the canvas
+   * 
+   * ### Example:
+   * After you apply your filters, the altered imaged data will not be placed until `draw()` is called.
+   * 
+   *     var filters = fuzzy(img).pixelate(5).invert(); // Not applied to canvas yet
+   *     filters.draw(img);                             // Applied
+   * 
+   * Options can be passed along
+   * 
+   *     fuzzy(img).invert().draw(img, { width: 500, overwrite: true });
+   * 
+   * This function can take various options:
+   *    - `overwrite`: Places the altered image data into the original canvas
+   *    - `callback`: A callback to be called passing along a HTMLImageElement containing the alterations
+   *    - `width`: Specifies the width to use when setting the image passed in directly or passed back through the callback (defaults to image width and finally to canvas width)
+   *    - `height`: Specifies the height to use when setting the image passed in directly or passed back through the callback (defaults to image height and finally to canvas height)
+   * 
+   * @method draw
+   * @param {Object} img (Optional) An HTMLImageElement to place the altered canvas' contents into
+   * @param {Object} options (Optional) Various options
+   * @return {Object} A copy of the altered HTMLImageCanvas
+   * @api public
+   */
   fuzzy.draw = function (img, options) {    
     _context.putImageData(_imgData, 0, 0);
     options = options || {};
@@ -186,7 +301,31 @@
     return _getCanvasCopy();
   };
   
-  /* Utility functions */
+  /**
+   * Simple scaling tool
+   * 
+   * Also places the altered image data into the internal canvas
+   * 
+   * Note: This will place canvas contents into the new image. If no effects have been applied, then this will simply scale, otherwise the new image will contain the effects.
+   * 
+   * ### Example:
+   *     var newImage = fuzzy(img).scale(500, 500);
+   * 
+   * @method scale
+   * @param {Number} w the new width
+   * @param {Number} h the new height
+   * @return {Object} Returns a new image with the new dimensions
+   * @api public
+   */
+   fuzzy.scale = function (w, h) {
+    _context.putImageData(_imgData, 0, 0);
+    return _getNewImage(w, h);
+  };
+  
+  /*!
+   * Beginnning varius utility functions
+   */
+  
   function _initImg(img) {
     _width = _canvas.width = img.width;
     _height = _canvas.height = img.height;
