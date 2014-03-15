@@ -116,7 +116,11 @@ Places the image data on the canvas
 After you apply your filters, the altered imaged data will not be placed until `draw()` is called.
 
     var filters = fuzzy(img).pixelate(5).invert(); // Not applied to canvas yet
-    `filters.draw(img);                             // Applied`
+    filters.draw(img);                             // Applied
+
+Options can be passed along
+
+    fuzzy(img).invert().draw(img, { width: 500, overwrite: true });
 
 This function can take various options:
    - `overwrite`: Places the altered image data into the original canvas
