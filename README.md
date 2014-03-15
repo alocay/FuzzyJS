@@ -8,8 +8,8 @@ A simple image filter/processing JavaScript library
 ### In the browser
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/aloca_000/Fuzzy/master/dist/fuzzy.min.js
-[max]: https://raw.github.com/aloca_000/Fuzzy/master/dist/fuzzy.js
+[min]: https://raw.github.com/alocay/FuzzyJS/master/dist/fuzzy.min.js
+[max]: https://raw.github.com/alocay/FuzzyJS/master/dist/fuzzy.js
 
 In your web page:
 
