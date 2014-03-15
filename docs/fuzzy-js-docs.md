@@ -141,7 +141,9 @@ This function can take various options:
 ## scale(w, h)
 
 Simple scaling tool
+
 Also places the altered image data into the internal canvas
+
 Note: This will place canvas contents into the new image. If no effects have been applied, then this will simply scale, otherwise the new image will contain the effects.
 
 ### Example:
