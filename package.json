@@ -1,5 +1,6 @@
 {
   "name": "FuzzyJS",
+  "distname": "fuzzy",
   "description": "A simple image filter/processing JavaScript library",
   "version": "0.1.0",
   "homepage": "https://github.com/alocay/FuzzyJS",
@@ -9,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/alocay/Fuzzy.git"
+    "url": "https://github.com/alocay/FuzzyJS.git"
   },
   "bugs": {
-    "url": "https://github.com/alocay/Fuzzy/issues"
+    "url": "https://github.com/alocay/FuzzyJS/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/alocay/Fuzzy/blob/master/LICENSE-MIT"
+      "url": "https://github.com/alocay/FuzzyJS/blob/master/LICENSE-MIT"
     }
   ],
   "main": "lib/fuzzy",
