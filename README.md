@@ -9,7 +9,7 @@ A simple image filter/processing JavaScript library
 Download the [production version][min] or the [development version][max].
 
 [min]: https://raw.github.com/aloca_000/Fuzzy/master/dist/fuzzy.min.js
-[max]: https://raw.github.com/aloca_000/Fuzzy/master/lib/fuzzy.js
+[max]: https://raw.github.com/aloca_000/Fuzzy/master/dist/fuzzy.js
 
 In your web page:
 

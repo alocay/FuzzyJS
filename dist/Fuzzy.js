@@ -1,11 +1,6 @@
-/*
- * fuzzy
- * https://github.com/alocay/fuzzy
- *
- * Copyright (c) 2014 Armando Locay
- * Licensed under the MIT license.
- */
-
+/*! FuzzyJS - v0.1.0 - 2014-03-14
+* https://github.com/alocay/FuzzyJS
+* Copyright (c) 2014 Armando Locay; Licensed MIT */
 (function(window) {
   'use strict';
   
