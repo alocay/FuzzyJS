@@ -35,7 +35,7 @@ See: fuzzy.colorFilter
 Applies a very simple color filter by filtering out the OTHER colors
 
 ### Examples:
-    `fuzzy(img).colorFilter(fuzzy.colorFilters.RED).draw();`
+    fuzzy(img).colorFilter(fuzzy.colorFilters.RED).draw(); // filters out green and blue
 
 Best to use the predefined values found in `fuzzy.colorFilters`
 
@@ -56,8 +56,8 @@ Applies a negative filter
 You can also pass a color filter to this method and that pixel value will not be altered
 
 ### Examples:
-    `fuzzy(img).invert().draw();`
-    `fuzzy(img).invert(fuzzy.colorFilters.GREEN).draw();`
+    fuzzy(img).invert().draw();
+    fuzzy(img).invert(fuzzy.colorFilters.GREEN).draw();
 
 ### Params: 
 
@@ -72,7 +72,7 @@ You can also pass a color filter to this method and that pixel value will not be
 Applies a grey scale effect
 
 ### Example:
-    `fuzzy(img).greyscale().draw();`
+    fuzzy(img).greyscale().draw();
 
 ### Return:
 
@@ -83,7 +83,7 @@ Applies a grey scale effect
 Applies a pixelation effect
 
 ### Example:
-    `fuzzy(img).pixelate(4).draw();`
+    fuzzy(img).pixelate(4).draw();
 
 ### Params: 
 
@@ -98,7 +98,7 @@ Applies a pixelation effect
 Applies a box blur effect
 
 ### Example:
-    `fuzzy(img).boxBlur(5).draw();`
+    fuzzy(img).boxBlur(5).draw();
 
 ### Params: 
 
@@ -113,9 +113,9 @@ Applies a box blur effect
 Places the image data on the canvas
 
 ### Example:
-    After you apply your filters, the altered imaged data will not be placed until `draw()` is called.
-    `var filters = fuzzy(img).pixelate(5).invert();` // Not applied to canvas yet
-    `filters.draw(img);`                             // Applied
+After you apply your filters, the altered imaged data will not be placed until `draw()` is called.
+    var filters = fuzzy(img).pixelate(5).invert(); // Not applied to canvas yet
+    filters.draw(img);                             // Applied
 
 This function can take various options:
     - `overwrite`: Places the altered image data into the original canvas
@@ -139,7 +139,7 @@ Simple scaling tool
 Also places the altered image data into the canvas
 
 ### Example:
-    `var newImage = fuzzy(img).scale(500, 500);`
+    var newImage = fuzzy(img).scale(500, 500);
 
 ### Params: 
 
