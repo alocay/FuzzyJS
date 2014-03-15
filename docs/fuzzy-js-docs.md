@@ -65,7 +65,7 @@ You can also pass a color filter to this method and that pixel value will not be
 
 ### Return:
 
-* **Object** Returns the current instance `fuzzy`
+* **Object** Returns the current instance of `fuzzy`
 
 ## greyscale()
 
@@ -76,7 +76,7 @@ Applies a grey scale effect
 
 ### Return:
 
-* **Object** Returns the current instance `fuzzy`
+* **Object** Returns the current instance of `fuzzy`
 
 ## pixelate(pixelSize)
 
@@ -91,7 +91,7 @@ Applies a pixelation effect
 
 ### Return:
 
-* **Object** Returns the current instance `fuzzy`
+* **Object** Returns the current instance of `fuzzy`
 
 ## boxBlur(The)
 
@@ -106,28 +106,29 @@ Applies a box blur effect
 
 ### Return:
 
-* **Object** Returns the current instance `fuzzy`
+* **Object** Returns the current instance of `fuzzy`
 
-## draw((Optional), (Optional))
+## draw(img, options)
 
 Places the image data on the canvas
 
 ### Example:
 After you apply your filters, the altered imaged data will not be placed until `draw()` is called.
+
     var filters = fuzzy(img).pixelate(5).invert(); // Not applied to canvas yet
-    filters.draw(img);                             // Applied
+    `filters.draw(img);                             // Applied`
 
 This function can take various options:
-    - `overwrite`: Places the altered image data into the original canvas
-    - `callback`: A callback to be called passing along a HTMLImageElement containing the alterations
-    - `width`: Specifies the width to use when setting the image passed in directly or passed back through the callback (defaults to image width and finally to canvas width)
-    - `height`: Specifies the height to use when setting the image passed in directly or passed back through the callback (defaults to image height and finally to canvas height)
+   - `overwrite`: Places the altered image data into the original canvas
+   - `callback`: A callback to be called passing along a HTMLImageElement containing the alterations
+   - `width`: Specifies the width to use when setting the image passed in directly or passed back through the callback (defaults to image width and finally to canvas width)
+   - `height`: Specifies the height to use when setting the image passed in directly or passed back through the callback (defaults to image height and finally to canvas height)
 
 ### Params: 
 
-* **Object** *(Optional)* An HTMLImageElement to place the altered canvas&#39; contents into
+* **Object** *img* (Optional) An HTMLImageElement to place the altered canvas&#39; contents into
 
-* **Object** *(Optional)* Various options
+* **Object** *options* (Optional) Various options
 
 ### Return:
 
