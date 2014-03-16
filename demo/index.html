@@ -15,17 +15,19 @@
                 maxAttempts = 5,
                 attempts = 0,
                 maxSampleImgHeight = 118,
-                ctx;
+                ctx,
+                newImage;
             
             canvas.width = myImg.width;
             canvas.height = myImg.height;
             ctx = canvas.getContext("2d");
             
-            var newImage;
+            // setup file picked handler
             $("#file-input").change(function(e) {
             	newImage = loadImage(
             		e.target.files[0],
             		function (i) {
+            			// change the image and re-run the demo
             			i.id = "myImage";
             			$("#myImage").replaceWith(i)
             			runDemo($("#myImage")[0]);
@@ -35,10 +37,16 @@
             	);
             });
             
+            /* 
+             * Set up the on hover popup
+             */
             var setupHoverPopup = function (imgToMouseOver, imgToScale, width, height) {
+            	// scale the image and store the larger one
             	var enlargedImage = fuzzy(imgToScale).scale(width, height);
             	
-            	waitForImgLoad(enlargedImage, function () {		        	
+            	// When the enlarged image is loaded, set up the mousemove/mouseleave handlers
+            	waitForImgLoad(enlargedImage, function () {
+            		// on mousemove, display the enlarged image div near the cursor		        	
 		        	$(imgToMouseOver).mousemove(function (event) {
 		        		if($("#enlarge").attr("src") !== enlargedImage.src) {
 		        			$("#enlarge").attr("src", enlargedImage.src);
@@ -50,12 +58,17 @@
 		        		}).addClass("enlarge-show");
 		        	});
 		        	
+		        	// on mouseleave, hide the popup div
 		        	$(imgToMouseOver).mouseleave(function (event) {
 		        		$("#enlarge").css("left", "-1000").removeClass("enlarge-show");
 		        	});
             	});
             };
             
+            /*
+             * The main demo function
+             * Run the demo from the image given
+             */
             var demo = function(image) {
             	try {
             		canvas.width = image.width;
@@ -63,17 +76,23 @@
                 	ctx.drawImage(image, 0, 0, image.width, image.height);
                	}
                	catch (e) {
+               		// There seems to be an issue in Mozilla where this error is thrown at times
+               		// when drawImage() is called even when the image is supposedly loaded. Just keep trying a few times if we get this error.
                		if(e.name === 'NS_ERROR_NOT_AVAILABLE' && attempts < maxAttempts) {
                			attempts++;
 	               		window.setTimeout(function () {
 	               			runDemo(image);
 	               		},100);
+	               		return;
                		}
                	}
                	
                	attempts = 0;
+               	
+               	// color filter demo
                 fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(null,
                 	{
+                		// callback function to chnage the sample image and setup the popup hover image
                 		callback: function (i) {
                 			var 
                 				element = $("#color-filter").children().first(),
@@ -84,6 +103,7 @@
                 			newImageElement.style.width = 'auto';
                 			newImageElement.src = i.src;
                 			
+                			// Place the new sample image
                 			if(element.attr("src") !== undefined) {
                 				element.replaceWith(newImageElement);
                 			}
@@ -91,46 +111,61 @@
                 				$(newImageElement).insertBefore(element);
                 			}
                 			
+                			// When 'i' is loaded, setup the popup
                 			waitForImgLoad(i, function () {
             					setupHoverPopup(newImageElement, i, newImageElement.style.width * 3, maxSampleImgHeight * 3);
             				});
                 		}
                 	});
                 
+                // invert filter sample - place into the given image
                 fuzzy(canvas).invert().draw($("#inverted")[0],
                 	{
+                		// setups the popup
                 		callback: function (i) {
                 			waitForImgLoad(i, function(im) {
                 				setupHoverPopup($("#inverted")[0], im, $("#inverted")[0].width * 3, maxSampleImgHeight * 3);
                 			});
                 		}
                 	});
+                
+                // invert filter with a color filter
                 fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw($("#inverted-color")[0],
                 	{
+                		// setups the popup
                 		callback: function (i) {
                 			waitForImgLoad(i, function(im) {
                 				setupHoverPopup($("#inverted-color")[0], im, $("#inverted-color")[0].width * 3, maxSampleImgHeight * 3);
                 			});
                 		}
                 	});
+                
+                // greyscale filter
                 fuzzy(canvas).greyscale().draw($("#greyscale")[0],
                 	{
+                		// setups the popup
                 		callback: function (i) {
                 			waitForImgLoad(i, function(im) {
                 				setupHoverPopup($("#greyscale")[0], im, $("#greyscale")[0].width * 3, maxSampleImgHeight * 3);
                 			});
                 		}
                 	});
+                
+                // pixelate filter
                 fuzzy(image).pixelate(5).draw($("#pixelate")[0],
                 	{
+                		// setups the popup
                 		callback: function (i) {
                 			waitForImgLoad(i, function(im) {
                 				setupHoverPopup($("#pixelate")[0], im, $("#pixelate")[0].width * 3, maxSampleImgHeight * 3);
                 			});
                 		}
                 	});
+                
+                // box blur filter
                 fuzzy(canvas).boxBlur(5).draw($("#box-blur")[0],
                 	{
+                		// setups the popup
                 		callback: function (i) {
                 			waitForImgLoad(i, function(im) {
                 				setupHoverPopup($("#box-blur")[0], im, $("#box-blur")[0].width * 3, maxSampleImgHeight * 3);
@@ -139,6 +174,10 @@
                 	});
             };
             
+            /*
+             * Waits for the given image to be loaded.
+             * When loaded, it calls the given function and passes through the image
+             */
             var waitForImgLoad = function (i, func) {
             	if(i.complete) {
             		func(i);
@@ -150,10 +189,12 @@
             	}
             };
             
+            // Runs the demo
             var runDemo = function (i) {
             	waitForImgLoad(i, demo);
             };
             
+            // initial demo run
             runDemo(myImg);
         }
     </script>
