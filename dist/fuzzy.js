@@ -1,4 +1,4 @@
-/*! FuzzyJS - v0.1.0 - 2014-03-14
+/*! FuzzyJS - v0.1.0 - 2014-03-16
 * https://github.com/alocay/FuzzyJS
 * Copyright (c) 2014 Armando Locay; Licensed MIT */
 (function(window) {
