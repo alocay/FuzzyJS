@@ -108,6 +108,99 @@ Applies a box blur effect
 
 * **Object** Returns the current instance of `fuzzy`
 
+## emboss()
+
+Applies a emboss effect
+
+### Example:
+    fuzzy(img).emboss().draw();
+
+The convolution matrix used for `emboss` (with offet 0 and divisor 1) is the following:
+    [-2, -1, 0],
+    [-1,  1, 1],
+    [ 0,  1, 2]
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## sharpen()
+
+Applies a sharpen effect
+
+### Example:
+    fuzzy(img).sharpen().draw();
+
+The convolution matrix used for `sharpen` (with offet 0 and divisor 1) is the following:
+    [    0, -0.33,     0],
+    [-0.33,  2.33, -0.33],
+    [    0, -0.33,     0]
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## luminosity(value)
+
+Changes the luminosity of the image
+
+### Example:
+    fuzzy(img).luminosity(1.5).draw(); // makes the image brighter 50%
+    fuzzy(img).luminosity(0.5).draw(); // makes the image darker by 50%
+    fuzzy(img).luminosity(1).draw();   // no change to the image
+
+If no value is given, defaulted to 1.0
+
+The convolution matrix used for `luminosity` (with offet 0 and divisor 1) is the following:
+    [0, 0, 0],
+    [0, x, 0],
+    [0, 0, 0]
+
+### Params: 
+
+* **Number** *value* The value to change the image&#39;s luminosity. &lt; 1 will darken the image and &gt; 1 will brighten the image.
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## edgetrace()
+
+Applies an edge trace effect
+
+### Example:
+    fuzzy(img).edgetrace().draw();
+
+The convolution matrix used for `edgetrace` (with offet 0 and divisor 1) is the following:
+    [0,  1, 0],
+    [1, -4, 1],
+    [0,  1, 0]
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## convolution(matrix, divisor, offset)
+
+Applies the convolution matrix given to the image
+
+### Example:
+    fuzzy(img).convolution(matrix).draw();
+
+The matrix is expected to be a 3x3 matrix (2d array).
+
+### Params: 
+
+* **Object** *matrix* The 2d array representing the convolution matrix
+
+* **Number** *divisor* A divisor to apply to the sums of the separate channels, defaults to 1
+
+* **Number** *offset* An offset to add to the sums of the separate channels, defaults to 0
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
 ## draw(img, options)
 
 Places the image data on the canvas

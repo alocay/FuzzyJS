@@ -53,8 +53,8 @@
 		        		}
 		        		
 		        		$("#enlarge").css({
-		        			top: event.clientY + 45,
-		        			left: event.clientX + 45
+		        			top: event.pageY + 35,
+		        			left: event.pageX + 45
 		        		}).addClass("enlarge-show");
 		        	});
 		        	
@@ -163,12 +163,67 @@
                 	});
                 
                 // box blur filter
-                fuzzy(canvas).boxBlur(5).draw($("#box-blur")[0],
+                fuzzy(canvas).boxBlur(3).draw($("#box-blur")[0],
                 	{
                 		// setups the popup
                 		callback: function (i) {
                 			waitForImgLoad(i, function(im) {
                 				setupHoverPopup($("#box-blur")[0], im, $("#box-blur")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                	
+                // embox filter
+            	fuzzy(canvas).emboss().draw($("#emboss")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#emboss")[0], im, $("#emboss")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                
+                // change luminosity - darker
+            	fuzzy(canvas).luminosity(0.5).draw($("#darken")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#darken")[0], im, $("#darken")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+            	
+            	// change luminosity - brighter
+            	fuzzy(canvas).luminosity(1.5).draw($("#lighten")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#lighten")[0], im, $("#lighten")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                
+                // sharpen filter
+            	fuzzy(canvas).sharpen().draw($("#sharpen")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#sharpen")[0], im, $("#sharpen")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                
+                // edge trace filter
+            	fuzzy(canvas).edgetrace().draw($("#edge")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#edge")[0], im, $("#edge")[0].width * 3, maxSampleImgHeight * 3);
                 			});
                 		}
                 	});
@@ -273,7 +328,28 @@
                     <h5 class="subtitle">Various other image processing tools</h5>
                 </div>
                 <div class="section group">
-                    <h4><i>Coming soon!</i></h4>
+                    <div class="col span_1_of_4">
+                        <img id="emboss" class="sample" height="118" />
+                        <div>Emboss</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="darken" class="sample" height="118" />
+                        <div>Darken</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="lighten" class="sample" height="118" />
+                        <div>Lighten</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="sharpen" class="sample" height="118" />
+                        <div>Sharpen</div>
+                    </div>
+                </div>
+                <div class="section group">
+                    <div class="col span_1_of_4">
+                        <img id="edge" class="sample" height="118" />
+                        <div>Edge trace</div>
+                    </div>
                 </div> 
             </div>
         </div>
