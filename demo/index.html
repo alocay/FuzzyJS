@@ -172,6 +172,28 @@
                 			});
                 		}
                 	});
+                
+                // horizontal motion blur
+            	fuzzy(canvas).motionBlur(8).draw($("#h-blur")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#h-blur")[0], im, $("#h-blur")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
+                	
+            	// vertical motion blur
+            	fuzzy(canvas).motionBlur(8, fuzzy.directions.VERTICAL).draw($("#v-blur")[0],
+            		{
+                		// setups the popup
+                		callback: function (i) {
+                			waitForImgLoad(i, function(im) {
+                				setupHoverPopup($("#v-blur")[0], im, $("#v-blur")[0].width * 3, maxSampleImgHeight * 3);
+                			});
+                		}
+                	});
                 	
                 // embox filter
             	fuzzy(canvas).emboss().draw($("#emboss")[0],
@@ -316,6 +338,14 @@
                     <div class="col span_1_of_4">
                         <img id="box-blur" class="sample" height="118" />
                         <div>Box blur</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="h-blur" class="sample" height="118" />
+                        <div>Horizontal blur</div>
+                    </div>
+                    <div class="col span_1_of_4">
+                        <img id="v-blur" class="sample" height="118" />
+                        <div>Vertical blur</div>
                     </div>
                 </div>
             </div>

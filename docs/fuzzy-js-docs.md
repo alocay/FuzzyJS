@@ -30,6 +30,16 @@ Current values
 
 See: fuzzy.colorFilter
 
+## directions
+
+Simple object used for passing in directions for blurs
+
+Current values
+   - `fuzzy.directions.VERTICAL`
+   - `fuzzy.directions.HORIZONTAL`
+
+See: fuzzy.motionBlur
+
 ## colorFilter(colorFilter)
 
 Applies a very simple color filter by filtering out the OTHER colors
@@ -93,7 +103,7 @@ Applies a pixelation effect
 
 * **Object** Returns the current instance of `fuzzy`
 
-## boxBlur(The)
+## boxBlur(blurSize)
 
 Applies a box blur effect
 
@@ -102,7 +112,42 @@ Applies a box blur effect
 
 ### Params: 
 
-* **(Number)** *The* size of the blur. The larger the number, the greater the affect.
+* **(Number)** *blurSize* The size of the blur. The larger the number, the greater the affect.
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## motionBlur(blur, direction)
+
+Applies a motion blur effect
+
+### Example:
+    fuzzy(img).motionBlur(5).draw();                             // applies a horizontal motion blur
+    fuzzy(img).motionBlur(5, fuzzy.directions.VERTICAL).draw();  // applies a vertical motion blur
+
+### Params: 
+
+* **(Number)** *blur* The size of the blur. The larger the number, the greater the affect.
+
+* **Object** *direction* (Optional) The direction of the blur. Defaults to horizontal.
+
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## gaussianBlur()
+
+Applies a gaussian blur effect
+
+### Example:
+    fuzzy(img).gaussianBlur().draw();
+
+The convolution matrix used for `gaussianBlur` (with offset 0 and divisor 1) is the following:
+
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
 
 ### Return:
 
