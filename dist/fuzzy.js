@@ -291,7 +291,7 @@
    * ### Example:
    *     fuzzy(img).emboss().draw();
    * 
-   * The convolution matrix used for `emboss` (with offet 0 and divisor 1) is the following:
+   * The convolution matrix used for `emboss` (with offset 0 and divisor 1) is the following:
    * 
    *     [-2, -1, 0],
    *     [-1,  1, 1],
@@ -312,7 +312,7 @@
    * ### Example:
    *     fuzzy(img).sharpen().draw();
    * 
-   * The convolution matrix used for `sharpen` (with offet 0 and divisor 1) is the following:
+   * The convolution matrix used for `sharpen` (with offset 0 and divisor 1) is the following:
    * 
    *     [    0, -0.33,     0],
    *     [-0.33,  2.33, -0.33],
@@ -337,11 +337,13 @@
    * 
    * If no value is given, defaulted to 1.0
    * 
-   * The convolution matrix used for `luminosity` (with offet 0 and divisor 1) is the following:
+   * The convolution matrix used for `luminosity` (with offset 0 and divisor 1) is the following:
    * 
    *     [0, 0, 0],
    *     [0, x, 0],
    *     [0, 0, 0]
+   * 
+   * Where 'x' is the luminosity value
    * 
    * @method luminosity
    * @param {Number} value The value to change the image's luminosity. < 1 will darken the image and > 1 will brighten the image.
@@ -364,7 +366,7 @@
    * ### Example:
    *     fuzzy(img).edgetrace().draw();
    * 
-   * The convolution matrix used for `edgetrace` (with offet 0 and divisor 1) is the following:
+   * The convolution matrix used for `edgetrace` (with offset 0 and divisor 1) is the following:
    * 
    *     [0,  1, 0],
    *     [1, -4, 1],
@@ -385,7 +387,7 @@
    * ### Example:
    *     fuzzy(img).convolution(matrix).draw();        // divisor is 1, offset is 0
    *     fuzzy(img).convolution(matrix, 5).draw();     // divisor is 5, offset is 0
-   *     fuzzy(img).convolution(matrix, 10, 5).draw(); // divisor is 10, offet is 5
+   *     fuzzy(img).convolution(matrix, 10, 5).draw(); // divisor is 10, offset is 5
    * 
    * The matrix is expected to be a 3x3 matrix (2d array).
    * 
