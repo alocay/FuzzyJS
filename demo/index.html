@@ -3,7 +3,7 @@
 <head>
     <title>Fuzzy JS</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script type="text/javascript" src="../lib/fuzzy.js"></script>
+    <script type="text/javascript" src="js/fuzzy.min.js"></script>
     <script type="text/javascript" src="js/load-image.min.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
     <script>
@@ -66,6 +66,13 @@
             };
             
             /*
+             * Setups the timer to run the image processing
+             */
+            var runDemoTimer = function(func) {
+            	window.setTimeout(func, 0);
+            }
+            
+            /*
              * The main demo function
              * Run the demo from the image given
              */
@@ -90,46 +97,51 @@
                	attempts = 0;
                	
                	// color filter demo
-                fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(null,
-                	{
-                		// callback function to chnage the sample image and setup the popup hover image
-                		callback: function (i) {
-                			var 
-                				element = $("#color-filter").children().first(),
-                				newImageElement = document.createElement('img');
-                				
-                			newImageElement.className = "sample";
-                			newImageElement.height = maxSampleImgHeight;
-                			newImageElement.style.width = 'auto';
-                			newImageElement.src = i.src;
-                			
-                			// Place the new sample image
-                			if(element.attr("src") !== undefined) {
-                				element.replaceWith(newImageElement);
-                			}
-                			else {
-                				$(newImageElement).insertBefore(element);
-                			}
-                			
-                			// When 'i' is loaded, setup the popup
-                			waitForImgLoad(i, function () {
-            					setupHoverPopup(newImageElement, i, newImageElement.style.width * 3, maxSampleImgHeight * 3);
-            				});
-                		}
-                	});
+               	runDemoTimer(function () {
+	                fuzzy(canvas).colorFilter(fuzzy.colorFilters.RED).draw(null,
+	                	{
+	                		// callback function to chnage the sample image and setup the popup hover image
+	                		callback: function (i) {
+	                			var 
+	                				element = $("#color-filter").children().first(),
+	                				newImageElement = document.createElement('img');
+	                				
+	                			newImageElement.className = "sample";
+	                			newImageElement.height = maxSampleImgHeight;
+	                			newImageElement.style.width = 'auto';
+	                			newImageElement.src = i.src;
+	                			
+	                			// Place the new sample image
+	                			if(element.attr("src") !== undefined) {
+	                				element.replaceWith(newImageElement);
+	                			}
+	                			else {
+	                				$(newImageElement).insertBefore(element);
+	                			}
+	                			
+	                			// When 'i' is loaded, setup the popup
+	                			waitForImgLoad(i, function () {
+	            					setupHoverPopup(newImageElement, i, newImageElement.style.width * 3, maxSampleImgHeight * 3);
+	            				});
+	                		}
+	                	});
+                });
                 
                 // invert filter sample - place into the given image
-                fuzzy(canvas).invert().draw($("#inverted")[0],
-                	{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#inverted")[0], im, $("#inverted")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+                runDemoTimer(function () {
+	                fuzzy(canvas).invert().draw($("#inverted")[0],
+	                	{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#inverted")[0], im, $("#inverted")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+                });
                 
                 // invert filter with a color filter
+                runDemoTimer(function () {
                 fuzzy(canvas).invert(fuzzy.colorFilters.RED).draw($("#inverted-color")[0],
                 	{
                 		// setups the popup
@@ -139,8 +151,10 @@
                 			});
                 		}
                 	});
+                });
                 
                 // greyscale filter
+                runDemoTimer(function () {
                 fuzzy(canvas).greyscale().draw($("#greyscale")[0],
                 	{
                 		// setups the popup
@@ -150,8 +164,10 @@
                 			});
                 		}
                 	});
+                });
                 
                 // pixelate filter
+                runDemoTimer(function () {
                 fuzzy(image).pixelate(5).draw($("#pixelate")[0],
                 	{
                 		// setups the popup
@@ -161,8 +177,10 @@
                 			});
                 		}
                 	});
+                });
                 
                 // box blur filter
+                runDemoTimer(function () {
                 fuzzy(canvas).boxBlur(3).draw($("#box-blur")[0],
                 	{
                 		// setups the popup
@@ -172,83 +190,98 @@
                 			});
                 		}
                 	});
+                });
                 
                 // horizontal motion blur
-            	fuzzy(canvas).motionBlur(8).draw($("#h-blur")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#h-blur")[0], im, $("#h-blur")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+                runDemoTimer(function () {
+	            	fuzzy(canvas).motionBlur(8).draw($("#h-blur")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#h-blur")[0], im, $("#h-blur")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+                });
                 	
             	// vertical motion blur
-            	fuzzy(canvas).motionBlur(8, fuzzy.directions.VERTICAL).draw($("#v-blur")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#v-blur")[0], im, $("#v-blur")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+            	runDemoTimer(function () {
+	            	fuzzy(canvas).motionBlur(8, fuzzy.directions.VERTICAL).draw($("#v-blur")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#v-blur")[0], im, $("#v-blur")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+              	});
                 	
-                // embox filter
-            	fuzzy(canvas).emboss().draw($("#emboss")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#emboss")[0], im, $("#emboss")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+                // emboss filter
+                runDemoTimer(function () {
+	            	fuzzy(canvas).emboss().draw($("#emboss")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#emboss")[0], im, $("#emboss")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+                });
                 
                 // change luminosity - darker
-            	fuzzy(canvas).luminosity(0.5).draw($("#darken")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#darken")[0], im, $("#darken")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+                runDemoTimer(function () {
+	            	fuzzy(canvas).luminosity(0.5).draw($("#darken")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#darken")[0], im, $("#darken")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+                });
             	
             	// change luminosity - brighter
-            	fuzzy(canvas).luminosity(1.5).draw($("#lighten")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#lighten")[0], im, $("#lighten")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+            	runDemoTimer(function () {
+	            	fuzzy(canvas).luminosity(1.5).draw($("#lighten")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#lighten")[0], im, $("#lighten")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+              	});
                 
                 // sharpen filter
-            	fuzzy(canvas).sharpen().draw($("#sharpen")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#sharpen")[0], im, $("#sharpen")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+                runDemoTimer(function () {
+	            	fuzzy(canvas).sharpen().draw($("#sharpen")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#sharpen")[0], im, $("#sharpen")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+                });
                 
                 // edge trace filter
-            	fuzzy(canvas).edgetrace().draw($("#edge")[0],
-            		{
-                		// setups the popup
-                		callback: function (i) {
-                			waitForImgLoad(i, function(im) {
-                				setupHoverPopup($("#edge")[0], im, $("#edge")[0].width * 3, maxSampleImgHeight * 3);
-                			});
-                		}
-                	});
+                runDemoTimer(function () {
+	            	fuzzy(canvas).edgetrace().draw($("#edge")[0],
+	            		{
+	                		// setups the popup
+	                		callback: function (i) {
+	                			waitForImgLoad(i, function(im) {
+	                				setupHoverPopup($("#edge")[0], im, $("#edge")[0].width * 3, maxSampleImgHeight * 3);
+	                			});
+	                		}
+	                	});
+                });
             };
             
             /*
