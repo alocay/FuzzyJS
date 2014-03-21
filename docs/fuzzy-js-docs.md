@@ -305,13 +305,5 @@ Note: This will place canvas contents into the new image. If no effects have bee
 
 * **Object** Returns a new image with the new dimensions
 
-## _initImg(img)
-
-Initializes the fuzzy object with the provided image. Uses the image to create a canvas which will be used for modifications.
-
-### Params: 
-
-* **Object** *img* Image to use for initialization
-
 <!-- End lib\fuzzy.js -->
 

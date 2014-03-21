@@ -1,4 +1,4 @@
-/*! FuzzyJS - v0.1.0 - 2014-03-16
+/*! FuzzyJS - v0.1.0 - 2014-03-21
 * https://github.com/alocay/FuzzyJS
 * Copyright (c) 2014 Armando Locay; Licensed MIT */
 (function(window) {
@@ -565,12 +565,26 @@
    * Beginnning varius private utility functions
    */
   
+  /*!
+  * Initializes the fuzzy object with the provided image. Uses the image to create a canvas which will be used for modifications.
+  * 
+  * @method _initImg
+  * @param {Object} img Image to use for initialization
+  * @api private
+  */
   function _initImg(img) {
     _width = _canvas.width = img.width;
     _height = _canvas.height = img.height;
     _context.drawImage(img, 0, 0, _width, _height);
   }
 
+ /*!
+  * Initializes the fuzzy object with the provided canvas. Uses the canvas to create a canvas which will be used for modifications.
+  * 
+  * @method _initCanvas
+  * @param {Object} c Image to use for initialization
+  * @api private
+  */
   function _initCanvas(c) {
     var tempContext, data;
 
@@ -582,6 +596,15 @@
     _context.putImageData(data, 0, 0);
   }
   
+ /*!
+  * Gets a new image from the current data on the stored canvas
+  * 
+  * @method _getNewImage
+  * @param {Number} width (Optional) The width of the new image
+  * @param {Number} height (Optional) The height of the new image
+  * @return {Object} Returns the new image
+  * @api private
+  */
   function _getNewImage(width, height) {
     var img = new window.Image();
       
@@ -594,6 +617,16 @@
     return img;
   }
   
+ /*!
+  * Gets the dimensions for a new image. 
+  * If width and height are given, uses those. If only one is given, it infers the other. If none are given, it uses the canvas width/height.
+  * 
+  * @method _getImageDimensions
+  * @param {Number} width (Optional) The width of the new image
+  * @param {Number} height (Optional) The height of the new image
+  * @return {Object} Returns an object containing the new width/height
+  * @api private
+  */
   function _getImageDimensions(width, height) {
     var
       widthDimension = width, 
@@ -614,7 +647,17 @@
     
     return { width: widthDimension, height: heightDimension };
   }
-  
+
+ /*!
+  * Gets the source for a new image with the content on the canvas. 
+  * If width/height given do not match the stored canvas, create a new cavnas to this new width/height and use that instead.
+  * 
+  * @method _getImageSrc
+  * @param {Number} width The width of the new image
+  * @param {Number} height The height of the new image
+  * @return {Object} Returns the source
+  * @api private
+  */
   function _getImageSrc(width, height) {
     var newCanvas = _canvas;
         
@@ -629,6 +672,13 @@
       return newCanvas.toDataURL();
   }
   
+ /*!
+  * Creates a new canvas and places to the content of the stored canvas into the newly created one
+  * 
+  * @method _getCanvasCopy
+  * @return {Object} Returns the new canvas
+  * @api private
+  */
   function _getCanvasCopy() {
     var tempCanvas = window.document.createElement('canvas');
     tempCanvas.width = _canvas.width;
@@ -638,6 +688,13 @@
     return tempCanvas;
   }
   
+ /*!
+  * Applies the invert filter. If a color filter is provided, that channel is unaltered.
+  * 
+  * @method _invertColorFilter
+  * @param {String} colorFilter (Optional) A channel to leave unchanged
+  * @api private
+  */
   function _invertColorFilter(colorFilter) {  
     for (var i = 0; i < _imgData.data.length; i += 4) {
       var r, g, b;
@@ -669,7 +726,20 @@
       _imgData.data[i + 2] = Math.min(255, Math.max(0, b));
     }
   }
-    
+  
+ /*!
+  * Gets the average pixel value in the given area of pixels (for all 3 channels)
+  * 
+  * @method _getAvgPixel
+  * @param {Number} x The x-coordinate of the pixel (zero based indexing)
+  * @param {Number} y The y-coordinate of the pixel (zero based indexing)
+  * @param {Number} width The width of the area we're altering
+  * @param {Number} height The height of the area we're altering
+  * @param {Number} wSize The width of the area we're averaging
+  * @param {Number} wSize The height of the area we're averaging
+  * @return {Object} Returns a pixel object containing the averaged 3 channels
+  * @api private
+  */
   function _getAvgPixel(x, y, width, height, wSize, hSize) {
     var avgR = 0;
     var avgG = 0;
@@ -700,6 +770,16 @@
     };
   }
   
+ /*!
+  * Gets the pixel at the given (x, y).
+  * Translates the (x, y) coordinate value to the correct array index
+  * 
+  * @method _getPixel
+  * @param {Number} x The x-coordinate of the pixel (zero based indexing)
+  * @param {Number} y The y-coordinate of the pixel (zero based indexing)
+  * @return {Object} Returns the pixel object
+  * @api private
+  */
   function _getPixel(x, y) {
     var index = (x + y * _imgData.width) * 4;
     return {
@@ -710,7 +790,18 @@
     };
   }
 
-  function _setPixel(x, y, pixel, pixels, width) {
+ /*!
+  * Sets the pixel at the given (x, y).
+  * Translates the (x, y) coordinate value to the correct array index
+  * 
+  * @method _setPixel
+  * @param {Number} x The x-coordinate of the pixel (zero based indexing)
+  * @param {Number} y The y-coordinate of the pixel (zero based indexing)
+  * @param {Object} pixel The new pixel values
+  * @param {Object} pixels (Optional) The array of pixels we're changing. Defaults to _imgData.data.
+  * @api private
+  */
+  function _setPixel(x, y, pixel, pixels) {
     var index;
     
     pixels = pixels || _imgData.data;
@@ -721,6 +812,19 @@
     pixels[index + 3] = pixel.a;
   }
 
+ /*!
+  * Sets the pixel at the given (x, y).
+  * Translates the (x, y) coordinate value to the correct array index
+  * 
+  * @method _setPixel
+  * @param {Number} x The x-coordinate of the pixel (zero based indexing)
+  * @param {Number} y The y-coordinate of the pixel (zero based indexing)
+  * @param {Object} matrix The convolution matrix
+  * @param {Object} divisor The divisor
+  * @param {Object} offset The offset
+  * @return {Object} Returns a pixel object with the new rgb values
+  * @api private
+  */
   function _getNeighborSum (x, y, matrix, divisor, offset) {
     var redSum = 0, greenSum = 0, blueSum = 0, red, green, blue, yy;
     for (var i = 0; i < matrix.length; i++, x++) {
@@ -742,6 +846,15 @@
     return { r: red, g: green, b: blue, a: 255 };
   }
   
+ /*!
+  * Applies a motion blur affect with the given width/height
+  * An equal width/height simply applies a box blur.
+  * 
+  * @method _motionBlur
+  * @param {Number} w The width of the blur area
+  * @param {Number} h The height of the blur area
+  * @api private
+  */
   function _motionBlur(w, h) {
     h = h < 0 ? 0 : h;
     w = w < 0 ? 0 : w;
