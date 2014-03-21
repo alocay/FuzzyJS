@@ -204,11 +204,11 @@ The convolution matrix used for `luminosity` (with offset 0 and divisor 1) is th
     [0, x, 0],
     [0, 0, 0]
 
-Where &#39;x&#39; is the luminosity value
+Where 'x' is the luminosity value
 
 ### Params: 
 
-* **Number** *value* The value to change the image&#39;s luminosity. &lt; 1 will darken the image and &gt; 1 will brighten the image.
+* **Number** *value* The value to change the image's luminosity. < 1 will darken the image and > 1 will brighten the image.
 
 ### Return:
 
@@ -276,7 +276,7 @@ This function can take various options:
 
 ### Params: 
 
-* **Object** *img* (Optional) An HTMLImageElement to place the altered canvas&#39; contents into
+* **Object** *img* (Optional) An HTMLImageElement to place the altered canvas' contents into
 
 * **Object** *options* (Optional) Various options
 
@@ -304,6 +304,14 @@ Note: This will place canvas contents into the new image. If no effects have bee
 ### Return:
 
 * **Object** Returns a new image with the new dimensions
+
+## _initImg(img)
+
+Initializes the fuzzy object with the provided image. Uses the image to create a canvas which will be used for modifications.
+
+### Params: 
+
+* **Object** *img* Image to use for initialization
 
 <!-- End lib\fuzzy.js -->
 
