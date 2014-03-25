@@ -1,10 +1,16 @@
-/*! FuzzyJS - v0.1.0 - 2014-03-21
+/*! FuzzyJS - v0.1.0 - 2014-03-25
 * https://github.com/alocay/FuzzyJS
 * Copyright (c) 2014 Armando Locay; Licensed MIT */
-(function(window) {
+(function(global) {
   'use strict';
   
   var
+    // Canvas constructor to use in case we're running in node
+    Canvas = (global.require && typeof global.require === 'function') ? global.require('canvas') : null,
+    
+    // Image constructor to use
+    Img = Canvas ? Canvas.Image : global.Image,
+  
     // stores a copy of the original canvas - internal use
     _canvas,
     
@@ -76,19 +82,19 @@
      * @api public
      */
     fuzzy = function (imgObj) {
-      _canvas = window.document.createElement('canvas');
+      _canvas = _getCanvas();
       _context = _canvas.getContext("2d");
       
       // check if we have a canvas or image, return null if neither
-      if(imgObj instanceof window.HTMLImageElement) { // in an image
-        if(!imgObj.complete) {
+      if(_isImage(imgObj)) { // in an image
+        if(!Canvas && !imgObj.complete) {
           throw "image must first be loaded (src: " + imgObj.src + ")";
         }
         
         // Sets up the canvas object or later use
         _initImg(imgObj);
       }
-      else if (imgObj instanceof window.HTMLCanvasElement) {
+      else if (_isCanvas(imgObj)) {
         // Copies this canvas for later use
         _initCanvas(imgObj);
       }
@@ -510,17 +516,13 @@
     _context.putImageData(_imgData, 0, 0);
     options = options || {};
     
-    if(img instanceof window.HTMLImageElement) {
+    if(_isImage(img)) {
       var
         width = options.width || img.width,
-        height = options.height || img.height,
-        widthAttr = img.attributes["width"],
-        heightAttr = img.attributes["height"];
-        
-      width = width <= 0 && widthAttr ? widthAttr.value : _canvas.width;
-      height = height <= 0 && heightAttr ? heightAttr.value : _canvas.height;
+        height = options.height || img.height;
       
-      img.src = _getImageSrc(new Dimension(width, height));
+      var dim = _getImageDimensions(width, height);
+      img.src = _getImageSrc(dim);
     }
     
     if(options.overwrite === true) {
@@ -561,6 +563,41 @@
   /*!
    * Beginnning varius private utility functions
    */
+  
+  /*!
+  * Creates a new canvas object
+  * 
+  * @method _getCanvas
+  * @return {Object} Returns a new canvas
+  * @api private
+  */
+  function _getCanvas() {
+    return Canvas ? new Canvas() : global.document.createElement('canvas');
+  }
+  
+  /*!
+  * Gets whether the given object is an image
+  * 
+  * @method _isImage
+  * @param {Object} img The object to check
+  * @return {Boolean} Returns true if it's an image, false otherwise
+  * @api private
+  */
+  function _isImage(img) {
+    return (Canvas && img instanceof Img) || (global.HTMLImageElement && img instanceof global.HTMLImageElement);
+  }
+  
+  /*!
+  * Gets whether the given object is a canvas
+  * 
+  * @method _isCanvas
+  * @param {Object} c The object to check
+  * @return {Boolean} Returns true if it's a canvas, false otherwise
+  * @api private
+  */
+  function _isCanvas(c) {
+    return (Canvas && c instanceof Canvas) || (global.HTMLCanvasElement && c instanceof global.HTMLCanvasElement);
+  }
   
   /*!
   * Initializes the fuzzy object with the provided image. Uses the image to create a canvas which will be used for modifications.
@@ -605,7 +642,7 @@
   * @api private
   */
   function _getNewImage(width, height) {
-    var img = new window.Image();
+    var img = new Img();
       
     var dimension = _getImageDimensions(width, height);
       
@@ -630,8 +667,8 @@
     var
       widthDimension = width, 
       heightDimension = height,
-      hasWidth = width && typeof width === 'number',
-      hasHeight = height && typeof height === 'number';
+      hasWidth = width && typeof width === 'number' && width > 0,
+      hasHeight = height && typeof height === 'number' && height > 0;
     
     if(hasWidth && !hasHeight) {
       heightDimension = width !== _canvas.width ? ((width / _canvas.width) * _canvas.height) | 0 : _canvas.height;
@@ -660,7 +697,7 @@
     var newCanvas = _canvas;
         
     if (dimensions.width !== _dimension.width || dimensions.height !== _dimension.height) {
-        newCanvas = window.document.createElement('canvas');
+        newCanvas = _getCanvas();
         newCanvas.width = dimensions.width;
         newCanvas.height = dimensions.height;
         
@@ -678,7 +715,7 @@
   * @api private
   */
   function _getCanvasCopy() {
-    var tempCanvas = window.document.createElement('canvas');
+    var tempCanvas = _getCanvas();
     tempCanvas.width = _canvas.width;
     tempCanvas.height = _canvas.height;
     tempCanvas.getContext("2d").drawImage(_canvas, 0, 0, _canvas.width, _canvas.height);
@@ -900,6 +937,6 @@
       this.height = (!h || typeof h !== 'number' || h < 0) ? 0 : h;
   }
 
-  window.fuzzy = fuzzy;
+  global.fuzzy = fuzzy;
 
-}(this));
+}(typeof exports === 'object' && exports || this));
