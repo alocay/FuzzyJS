@@ -2,7 +2,7 @@
 
 A simple image filter/processing JavaScript library
 
-[Simple Fuzzy JS Demo](http://fuzzyjs.webuda.com/)
+[Simple Fuzzy JS Demo](http://alocay.github.io/projects/fuzzyjs/index.html)
 
 ## Getting Started
 ### In the browser
