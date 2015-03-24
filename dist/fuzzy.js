@@ -127,21 +127,6 @@
   };
   
   /**
-   * Simple object used for passing in directions for blurs
-   * 
-   * Current values
-   *    - `fuzzy.directions.VERTICAL`
-   *    - `fuzzy.directions.HORIZONTAL`
-   * 
-   * @see fuzzy.motionBlur
-   * @api public
-   */
-  fuzzy.directions = {
-    VERTICAL: "vertical",
-    HORIZONTAL: "horizontal"
-  };
-  
-  /**
    * Applies a very simple color filter by filtering out the OTHER colors
    * 
    * ### Examples:
@@ -280,7 +265,7 @@
    */
   fuzzy.boxBlur = function (blurSize) {
     blurSize = (!blurSize || typeof blurSize !== 'number' || blurSize < 0) ? 0 : blurSize;
-    _motionBlur(new Dimension(blurSize, blurSize));
+    _motionBlur(blurSize, blurSize);
     
     return this;
   };
@@ -298,7 +283,7 @@
    */
   fuzzy.horizontalBlur = function (blur) {
     blur = (!blur || typeof blur !== 'number' || blur < 0) ? 0 : blur;
-    _motionBlur(new Dimension(blur, 1));
+    _motionBlur(blur, 1);
     
     return this;
   };
@@ -316,7 +301,7 @@
      */
   fuzzy.verticalBlur = function (blur) {
       blur = (!blur || typeof blur !== 'number' || blur < 0) ? 0 : blur;
-      _motionBlur(new Dimension(1, blur));
+      _motionBlur(1, blur);
 
       return this;
   };
