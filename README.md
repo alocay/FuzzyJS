@@ -6,7 +6,7 @@ A simple image filter/processing JavaScript library
 
 ## Getting Started
 ### In the browser
-Download the [production version][min] or the [development version][max].
+Download the [minified version][min] or the [development version][max].
 
 [min]: https://raw.github.com/alocay/FuzzyJS/master/dist/fuzzy.min.js
 [max]: https://raw.github.com/alocay/FuzzyJS/master/dist/fuzzy.js
