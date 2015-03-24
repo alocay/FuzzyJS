@@ -118,19 +118,31 @@ Applies a box blur effect
 
 * **Object** Returns the current instance of `fuzzy`
 
-## motionBlur(blur, direction)
+## horizontalBlur(blur, direction)
 
-Applies a motion blur effect
+Applies a horizontal motion blur effect
 
 ### Example:
-    fuzzy(img).motionBlur(5).draw();                             // applies a horizontal motion blur
-    fuzzy(img).motionBlur(5, fuzzy.directions.VERTICAL).draw();  // applies a vertical motion blur
+    fuzzy(img).horizontalBlur(5).draw();                             // applies a horizontal motion blur
 
 ### Params: 
 
 * **(Number)** *blur* The size of the blur. The larger the number, the greater the affect.
 
-* **Object** *direction* (Optional) The direction of the blur. Defaults to horizontal.
+### Return:
+
+* **Object** Returns the current instance of `fuzzy`
+
+## verticalBlur(blur, direction)
+
+Applies a horizontal motion blur effect
+
+### Example:
+    fuzzy(img).verticalBlur(5).draw();                             // applies a vertical motion blur
+
+### Params: 
+
+* **(Number)** *blur* The size of the blur. The larger the number, the greater the affect.
 
 ### Return:
 

@@ -1,6 +1,6 @@
-/*! FuzzyJS - v0.1.0 - 2014-03-21
+/*! FuzzyJS - v0.1.0 - 2015-03-23
 * https://github.com/alocay/FuzzyJS
-* Copyright (c) 2014 Armando Locay; Licensed MIT */
+* Copyright (c) 2015 Armando Locay; Licensed MIT */
 (function(window) {
   'use strict';
   
@@ -157,7 +157,6 @@
    */
   fuzzy.colorFilter = function (colorFilter) {    
     for (var i = 0; i < _imgData.data.length; i += 4) {
-      var r, g, b;
       
       // simply set the pixels not related to the specified color to 0
       switch (colorFilter) {
@@ -287,34 +286,41 @@
   };
   
   /**
-   * Applies a motion blur effect
+   * Applies a horizontal motion blur effect
    * 
    * ### Example:
-   *     fuzzy(img).motionBlur(5).draw();                             // applies a horizontal motion blur
-   *     fuzzy(img).motionBlur(5, fuzzy.directions.VERTICAL).draw();  // applies a vertical motion blur
+   *     fuzzy(img).horizontalBlur(5).draw();  // applies a horizontal motion blur
    * 
-   * @method motionBlur
+   * @method horizontalBlur
    * @param (Number) blur The size of the blur. The larger the number, the greater the affect.
-   * @param {Object} direction (Optional) The direction of the blur. Defaults to horizontal.
    * @return {Object} Returns the current instance of `fuzzy`
    * @api public
    */
-  fuzzy.motionBlur = function (blur, direction) {
+  fuzzy.horizontalBlur = function (blur) {
     blur = (!blur || typeof blur !== 'number' || blur < 0) ? 0 : blur;
-    direction = direction || fuzzy.directions.HORIZONTAL;
-
-    switch(direction) {
-      case fuzzy.directions.HORIZONTAL:
-        _motionBlur(new Dimension(blur, 1));
-        break;
-      case fuzzy.directions.VERTICAL:
-        _motionBlur(new Dimension(1, blur));
-        break;
-    }
+    _motionBlur(new Dimension(blur, 1));
     
     return this;
   };
   
+    /**
+     * Applies a vertical motion blur effect
+     * 
+     * ### Example:
+     *     fuzzy(img).verticalBlur(5).draw();  // applies a vertical motion blur
+     * 
+     * @method verticalBlur
+     * @param (Number) blur The size of the blur. The larger the number, the greater the affect.
+     * @return {Object} Returns the current instance of `fuzzy`
+     * @api public
+     */
+  fuzzy.verticalBlur = function (blur) {
+      blur = (!blur || typeof blur !== 'number' || blur < 0) ? 0 : blur;
+      _motionBlur(new Dimension(1, blur));
+
+      return this;
+  };
+
   /**
    * Applies a gaussian blur effect
    * 
@@ -440,6 +446,12 @@
    * Applies the convolution matrix given to the image
    * 
    * ### Example:
+   *     var matrix = [
+   *       [0, 0, 0],
+   *       [0, 1, 0],
+   *       [0, 0, 0]
+   *     ];
+   *
    *     fuzzy(img).convolution(matrix).draw();        // divisor is 1, offset is 0
    *     fuzzy(img).convolution(matrix, 5).draw();     // divisor is 5, offset is 0
    *     fuzzy(img).convolution(matrix, 10, 5).draw(); // divisor is 10, offset is 5
