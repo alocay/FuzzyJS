@@ -1,4 +1,4 @@
-/*! FuzzyJS - v0.1.0 - 2015-03-24
+/*! FuzzyJS - v0.1.0 - 2015-03-25
 * https://github.com/alocay/FuzzyJS
 * Copyright (c) 2015 Armando Locay; Licensed MIT */
 (function(window) {
@@ -8,16 +8,13 @@
     // stores a copy of the original canvas - internal use
     _canvas,
     
-    // 2d context of _canvas - internal use
-    _context,
-    
     // pixel data array of _canvas - internal use
     _imgData,
     
     // dimensions of the given image or canvas - internal use
     _dimension,
-    
-    // the original canvas/image - internal use
+
+    // the original canvas - internal use
     _originalCanvas,
     
     // predefined matrices used for convolution
@@ -77,7 +74,6 @@
      */
     fuzzy = function (imgObj) {
       _canvas = window.document.createElement('canvas');
-      _context = _canvas.getContext("2d");
       
       // check if we have a canvas or image, return null if neither
       if(imgObj instanceof window.HTMLImageElement) { // in an image
@@ -97,7 +93,7 @@
       }
       
       // Get the pixel data
-      _imgData = _context.getImageData(0, 0, _dimension.width, _dimension.height);
+      _imgData = _canvas.getContext("2d").getImageData(0, 0, imgObj.width, imgObj.height);
       
       // return itself
       return fuzzy;
@@ -108,52 +104,34 @@
     */
 
   /**
-   * Simple object used for passing in color filters
-   * 
-   * Current values
-   *    - `fuzzy.colorFilters.RED`
-   *    - `fuzzy.colorFilters.GREEN`
-   *    - `fuzzy.colorFilters.BLUE`
-   *    - `fuzzy.colorFilters.NONE`
-   * 
-   * @see fuzzy.colorFilter
-   * @api public
-   */
-  fuzzy.colorFilters = {
-    RED: "red",
-    GREEN: "green",
-    BLUE: "blue",
-    NONE: "none" // used primarily interally
-  };
-  
-  /**
    * Applies a very simple color filter by filtering out the OTHER colors
    * 
    * ### Examples:
-   *     fuzzy(img).colorFilter(fuzzy.colorFilters.RED).draw(); // filters out green and blue
+   *     fuzzy(img).colorFilter('red').draw(); // filters out green and blue
    * 
    * Best to use the predefined values found in `fuzzy.colorFilters`
    * 
    * @method colorFilter
-   * @param {String} colorFilter The color to use in the filter
-   * @see fuzzy.colorFilters
+   * @param {String} color The color to use in the filter
    * @return {Object} Returns the current instance of `fuzzy`
    * @api public
    */
-  fuzzy.colorFilter = function (colorFilter) {    
+  fuzzy.colorFilter = function (color) {
+    color = color.toLowerCase();
+    _verifyColorFilter(color);
+
     for (var i = 0; i < _imgData.data.length; i += 4) {
-      
       // simply set the pixels not related to the specified color to 0
-      switch (colorFilter) {
-        case fuzzy.colorFilters.RED:
+      switch (color) {
+        case 'red':
           _imgData.data[i + 1] = 0;
           _imgData.data[i + 2] = 0;
           break;
-        case fuzzy.colorFilters.GREEN:
+        case 'green':
           _imgData.data[i] = 0;
           _imgData.data[i + 2] = 0;
           break;
-        case fuzzy.colorFilters.BLUE:
+        case 'blue':
           _imgData.data[i] = 0;
           _imgData.data[i + 1] = 0;
           break;
@@ -170,19 +148,21 @@
    * 
    * ### Examples:
    *     fuzzy(img).invert().draw();
-   *     fuzzy(img).invert(fuzzy.colorFilters.GREEN).draw();
+   *     fuzzy(img).invert('green').draw();
    * 
    * @method invert
-   * @param {Object} colorFilter (Optional) Specifies a color to leave unaltered for each pixel
+   * @param {String} color (Optional) Specifies a channel to leave unaltered for each pixel
    * @return {Object} Returns the current instance of `fuzzy`
    * @api public
    */
-  fuzzy.invert = function(colorFilter) {
-    if(colorFilter) {
-      _invertColorFilter(colorFilter);
+  fuzzy.invert = function (color) {
+    if (color) {
+      color = color.toLowerCase();
+      _verifyColorFilter(color);
+      _invertColorFilter(color);
     }
     else {
-      _invertColorFilter(fuzzy.colorFilters.NONE);
+      _invertColorFilter();
     }
     
     return this;
@@ -224,25 +204,25 @@
    */
   fuzzy.pixelate = function (pixelSize) {
     pixelSize = pixelSize <= 0 ? 1 : pixelSize;
-    pixelSize = pixelSize >= _dimension.width ? _dimension.width - 1 : pixelSize;
+    pixelSize = pixelSize >= _canvas.width ? _canvas.width - 1 : pixelSize;
     
-    for (var i = 0; i < _dimension.width; i += pixelSize) {
-      for (var j = 0; j < _dimension.height; j += pixelSize) {
+    for (var i = 0; i < _canvas.width; i += pixelSize) {
+      for (var j = 0; j < _canvas.height; j += pixelSize) {
         var offsetx = (pixelSize / 2) | 0;
         var offsety = (pixelSize / 2) | 0;
       
-        while (i + offsetx >= _dimension.width) {
+        while (i + offsetx >= _canvas.width) {
           offsetx--;
         }
         
-        while (j + offsety >= _dimension.height) {
+        while (j + offsety >= _canvas.height) {
           offsety--;
         }
         
         var pixel = _getPixel(i + offsetx, j + offsety);
         
-        for (var x = i; x < i + pixelSize && x < _dimension.width; x++) {
-          for (var y = j; y < j + pixelSize && y < _dimension.height; y++) {
+        for (var x = i; x < i + pixelSize && x < _canvas.width; x++) {
+          for (var y = j; y < j + pixelSize && y < _canvas.height; y++) {
             _setPixel(x, y, pixel);
           }
         }
@@ -499,69 +479,25 @@
    * 
    * @method draw
    * @param {Object} img (Optional) An HTMLImageElement to place the altered canvas' contents into
-   * @param {Object} options (Optional) Various options
-   * @return {Object} A copy of the altered HTMLImageCanvas
+   * @param {Object} callback (Optional) A callback function returning an HTMLImageElement object with the modified canvas data
    * @api public
    */
-  fuzzy.draw = function (img, options) {    
-    _context.putImageData(_imgData, 0, 0);
-    options = options || {};
+  fuzzy.draw = function (img) {
     var validImg = false;
     
-    if(img instanceof window.HTMLImageElement) {
-      var
-        width = options.width || img.width,
-        height = options.height || img.height,
-        widthAttr = img.attributes["width"],
-        heightAttr = img.attributes["height"];
-        
-      width = width <= 0 && widthAttr ? widthAttr.value : _canvas.width;
-      height = height <= 0 && heightAttr ? heightAttr.value : _canvas.height;
-      
-      img.src = _getImageSrc(new Dimension(width, height));
-      validImg = true;
-    }
-    
-    /*if(options.overwrite === true) {
-      if(_originalCanvas) {
-        _originalCanvas.getContext("2d").putImageData(_imgData, 0, 0);
-      }
-    }*/
+    _canvas.getContext("2d").putImageData(_imgData, 0, 0);
 
-    _originalCanvas.getContext("2d").putImageData(_imgData, 0, 0);
-    
-    if (options.callback && typeof options.callback === 'function') {
-      if (validImg) {
-            options.callback(img);
-      }
-      else {
-        var newImage = _getNewImage(options.width, options.height);
-        options.callback(newImage);
-      }
+    if (_originalCanvas) {
+      _originalCanvas.getContext("2d").putImageData(_imgData, 0, 0);
     }
-    
-    //return _getCanvasCopy();
-  };
-  
-  /**
-   * Simple scaling tool
-   * 
-   * Also places the altered image data into the internal canvas
-   * 
-   * Note: This will place canvas contents into the new image. If no effects have been applied, then this will simply scale, otherwise the new image will contain the effects.
-   * 
-   * ### Example:
-   *     var newImage = fuzzy(img).scale(500, 500);
-   * 
-   * @method scale
-   * @param {Number} w the new width
-   * @param {Number} h the new height
-   * @return {Object} Returns a new image with the new dimensions
-   * @api public
-   */
-   fuzzy.scale = function (w, h) {
-    _context.putImageData(_imgData, 0, 0);
-    return _getNewImage(w, h);
+
+    if (img instanceof window.HTMLImageElement) {
+      img.width = _canvas.width;
+      img.height = _canvas.height;
+      img.src = _canvas.toDataURL();
+    }
+
+    _originalCanvas = null;
   };
   
   /*!
@@ -578,8 +514,9 @@
   function _initImg(img) {
     var w = _canvas.width = img.width;
     var h = _canvas.height = img.height;
+
     _dimension = new Dimension(w, h);
-    _context.drawImage(img, 0, 0, _dimension.width, _dimension.height);
+    _canvas.getContext("2d").drawImage(img, 0, 0, img.width, img.height);
   }
 
  /*!
@@ -591,14 +528,14 @@
   */
   function _initCanvas(c) {
     var tempContext, data;
-
     var w = _canvas.width = c.width;
     var h = _canvas.height = c.height;
+
     _dimension = new Dimension(w, h);
     _originalCanvas = c;
     tempContext = _originalCanvas.getContext("2d");
     data = tempContext.getImageData(0, 0, _dimension.width, _dimension.height);
-    _context.putImageData(data, 0, 0);
+    _canvas.getContext("2d").putImageData(data, 0, 0);
   }
   
  /*!
@@ -610,70 +547,14 @@
   * @return {Object} Returns the new image
   * @api private
   */
-  function _getNewImage(width, height) {
+  function _getNewImage() {
     var img = new window.Image();
       
-    var dimension = _getImageDimensions(width, height);
-      
-    img.width = dimension.width;
-    img.height = dimension.height;
-    img.src = _getImageSrc(dimension);
+    img.width = _canvas.width;
+    img.height = _canvas.height;
+    img.src = _canvas.toDataURL();
     
     return img;
-  }
-  
- /*!
-  * Gets the dimensions for a new image. 
-  * If width and height are given, uses those. If only one is given, it infers the other. If none are given, it uses the canvas width/height.
-  * 
-  * @method _getImageDimensions
-  * @param {Number} width (Optional) The width of the new image
-  * @param {Number} height (Optional) The height of the new image
-  * @return {Object} Returns an dimension object containing the new width/height
-  * @api private
-  */
-  function _getImageDimensions(width, height) {
-    var
-      widthDimension = width, 
-      heightDimension = height,
-      hasWidth = width && typeof width === 'number',
-      hasHeight = height && typeof height === 'number';
-    
-    if(hasWidth && !hasHeight) {
-      heightDimension = width !== _canvas.width ? ((width / _canvas.width) * _canvas.height) | 0 : _canvas.height;
-    }
-    else if (hasHeight && !hasWidth) {
-      widthDimension = height !== _canvas.height ? ((height / _canvas.height) * _canvas.width) | 0 : _canvas.width;
-    }
-    else if (!hasWidth && !hasWidth) {
-      widthDimension = _canvas.width;
-      heightDimension = _canvas.height;
-    }
-    
-    return new Dimension(widthDimension, heightDimension);
-  }
-
- /*!
-  * Gets the source for a new image with the content on the canvas. 
-  * If width/height given do not match the stored canvas, create a new cavnas to this new width/height and use that instead.
-  * 
-  * @method _getImageSrc
-  * @param {Object} dimensions The desired dimensions for the image
-  * @return {Object} Returns the source
-  * @api private
-  */
-  function _getImageSrc(dimensions) {
-    var newCanvas = _canvas;
-        
-    if (dimensions.width !== _dimension.width || dimensions.height !== _dimension.height) {
-        newCanvas = window.document.createElement('canvas');
-        newCanvas.width = dimensions.width;
-        newCanvas.height = dimensions.height;
-        
-        newCanvas.getContext("2d").drawImage(_canvas, 0, 0, dimensions.width, dimensions.height);
-      }
-      
-      return newCanvas.toDataURL();
   }
   
  /*!
@@ -696,24 +577,24 @@
   * Applies the invert filter. If a color filter is provided, that channel is unaltered.
   * 
   * @method _invertColorFilter
-  * @param {String} colorFilter (Optional) A channel to leave unchanged
+  * @param {String} color (Optional) A channel to leave unchanged
   * @api private
   */
-  function _invertColorFilter(colorFilter) {  
+  function _invertColorFilter(color) {
     for (var i = 0; i < _imgData.data.length; i += 4) {
       var r, g, b;
-      switch (colorFilter) {
-        case fuzzy.colorFilters.RED:
+      switch (color) {
+        case 'red':
           r = _imgData.data[i];
           g = 255 - _imgData.data[i + 1];
           b = 255 - _imgData.data[i + 2];
           break;
-        case fuzzy.colorFilters.GREEN:
+        case 'green':
           r = 255 - _imgData.data[i];
           g = _imgData.data[i + 1];
           b = 255 - _imgData.data[i + 2];
           break;
-        case fuzzy.colorFilters.BLUE:
+        case 'blue':
           r = 255 - _imgData.data[i];
           g = 255 - _imgData.data[i + 1];
           b = _imgData.data[i + 2];
@@ -873,6 +754,23 @@
           }
         }
       }
+    }
+  }
+
+  /*!
+  * Verifies that the color parameter is appropriate
+  * 
+  * @method _verifyColorFilter
+  * @param {String} color The color
+  * @api private
+  */
+  function _verifyColorFilter(color) {
+    if (typeof color !== "string") {
+      throw "Fuzzy: Color filter expected to be a string";
+    }
+
+    if (color !== 'red' && color !== 'green' && color !== 'blue') {
+      throw "Fuzzy: Unknown color filter";
     }
   }
   
