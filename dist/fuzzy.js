@@ -1,4 +1,4 @@
-/*! FuzzyJS - v0.1.0 - 2015-03-23
+/*! FuzzyJS - v0.1.0 - 2015-03-24
 * https://github.com/alocay/FuzzyJS
 * Copyright (c) 2015 Armando Locay; Licensed MIT */
 (function(window) {
@@ -506,6 +506,7 @@
   fuzzy.draw = function (img, options) {    
     _context.putImageData(_imgData, 0, 0);
     options = options || {};
+    var validImg = false;
     
     if(img instanceof window.HTMLImageElement) {
       var
@@ -518,20 +519,28 @@
       height = height <= 0 && heightAttr ? heightAttr.value : _canvas.height;
       
       img.src = _getImageSrc(new Dimension(width, height));
+      validImg = true;
     }
     
-    if(options.overwrite === true) {
+    /*if(options.overwrite === true) {
       if(_originalCanvas) {
         _originalCanvas.getContext("2d").putImageData(_imgData, 0, 0);
       }
+    }*/
+
+    _originalCanvas.getContext("2d").putImageData(_imgData, 0, 0);
+    
+    if (options.callback && typeof options.callback === 'function') {
+      if (validImg) {
+            options.callback(img);
+      }
+      else {
+        var newImage = _getNewImage(options.width, options.height);
+        options.callback(newImage);
+      }
     }
     
-    if(options.callback && typeof options.callback === 'function') {
-      var newImage = _getNewImage(options.width, options.height);      
-      options.callback(newImage);
-    }
-    
-    return _getCanvasCopy();
+    //return _getCanvasCopy();
   };
   
   /**
